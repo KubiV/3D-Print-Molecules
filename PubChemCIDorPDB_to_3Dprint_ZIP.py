@@ -32,8 +32,8 @@ if choice == "CID":
     else:
         print(f"Failed to download the file. Status code: {response.status_code}")
 
-        sdf_file = "input.sdf"  # Replace with the path to your SDF file
-        pdb_file = "output.pdb"  # Desired name for the output PDB file
+    sdf_file = "input.sdf"  # Replace with the path to your SDF file
+    pdb_file = "output.pdb"  # Desired name for the output PDB file
 
     # Run the obabel command
     command = ["obabel", sdf_file, "-O", pdb_file]
