@@ -1,14 +1,13 @@
-
 # 3D Print Molecules
  Python script which makes easier to 3D print moleculs in muliticolour by automatical separate export of atoms of each kind. 
  
-![Molecule for 3D printing in PrusaSlicer (left) and in PyMOL (right)](https://raw.githubusercontent.com/KubiV/3D-Print-Molecules/main/Photos/Img1.png?token=GHSAT0AAAAAACH2PO46BD2CRWKNYHHNXRH4ZJLYPTQ)
+![Molecule for 3D printing in PrusaSlicer (left) and in PyMOL (right)](https://raw.githubusercontent.com/KubiV/3D-Print-Molecules/main/Photos/Img1.png?token=GHSAT0AAAAAACH2PO46L43U7IBRHHEXC3UQZJLYIWQ)
 
 ## Usage
 
  1. Main script works in the directory, whete it is located.
 
-    PubChemCID_to_3Dprint.py
+[`PubChemCID_to_3Dprint.py`](https://github.com/KubiV/3D-Print-Molecules/blob/main/PubChemCID_to_3Dprint.py)
 
   2. Install Incentive [PyMOL](https://pymol.org/2/) program.
 
