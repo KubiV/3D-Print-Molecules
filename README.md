@@ -5,7 +5,7 @@
 
 ## Usage
 
- 1. Main script works in the directory, whete it is located.
+ 1. Main script works in the directory, which is set in the terminal (first of all don't forget to execute `cd Folder/desired_folder` ).
 
 [`PubChemCID_to_3Dprint.py`](https://github.com/KubiV/3D-Print-Molecules/blob/main/PubChemCID_to_3Dprint.py)
 
