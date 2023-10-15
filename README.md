@@ -27,9 +27,12 @@ to be specified
 
  4. Execute the script and enter the [PubChem](https://pubchem.ncbi.nlm.nih.gov) CID number (Compound ID number) for the molecule. The .stl files are generated for C, O, H, N atoms separately and one for the molecule as a whole.
 
-  5. Use [PrusaSlicer](https://www.prusa3d.com/page/prusaslicer_424/) to Scale up the molecules and set the colours for multicolour printing. Slice the model.
+ 5. Import to [PrusaSlicer](https://www.prusa3d.com/page/prusaslicer_424/) all STL files at once! And confirm "Multi part object" -> YES
+   ![Molecule for 3D printing in PrusaSlicer (left) and in PyMOL (right)](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/Img2.png)
 
-  6.  3D print your molecule!
+ 6.  Scale the molecules, set the colours for multicolour printing and slice the model.
+
+ 7.  3D print your molecule!
 
 ## Links
 
