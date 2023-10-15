@@ -4,6 +4,9 @@
 import os
 import requests
 import subprocess
+import zipfile
+import shutil
+import time
 
 CID = input("PubChem CID: ")
 url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/"+ CID +"/record/SDF?record_type=3d&response_type=display"
@@ -63,7 +66,7 @@ lines_to_write = [
   'cmd.save("O_output.stl", "oxygen_atoms")',
 
   'cmd.show("spheres", "all")',
-  'cmd.save("All_output.stl", "all")'
+  'cmd.save("Molecule.stl", "all")'
   # Add more lines as needed
 ]
 
@@ -86,13 +89,59 @@ except FileNotFoundError:
 except Exception as e:
     print(f"An error occurred: {e}")
 
+# Define the directory where your files are located
+source_folder = '.'
+new_folder = 'new_folder'
+zip_file_name = 'MultiBody_molecule.zip'
+files_to_move = ['C_output.stl', 'O_output.stl', 'H_output.stl', 'N_output.stl']
+
+# Create the new folder
+os.mkdir(new_folder)  # Use os.makedirs(new_folder) to create parent directories if they don't exist
+
+# Create the new folder if it doesn't exist
+if not os.path.exists(new_folder):
+    os.mkdir(new_folder)
+
+# Sleep for 5 seconds
+time.sleep(5)
+
+# Move the files to the new folder
+for file in files_to_move:
+    source_path = os.path.join(source_folder, file)
+    destination_path = os.path.join(new_folder, file)
+
+    try:
+        shutil.move(source_path, destination_path)
+        print(f"Moved {file} to {new_folder}.")
+    except FileNotFoundError:
+        print(f"File not found: {file}")
+    except Exception as e:
+        print(f"An error occurred while moving {file}: {e}")
+
+# Create a ZipFile object in write mode
+with zipfile.ZipFile(zip_file_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    for foldername, subfolders, filenames in os.walk(new_folder):
+        for filename in filenames:
+            file_path = os.path.join(foldername, filename)
+            relative_path = os.path.relpath(file_path, new_folder)
+            zipf.write(file_path, relative_path)
+
+print(f'{zip_file_name} has been created with the files from {new_folder}.')
+
+# Sleep for 5 seconds
+time.sleep(5)
+
 # List of file paths to be deleted
 files_delete = [
     "input.sdf",
     "output.pdb",
     "script.pml",
+    "new_folder/C_output.stl",
+    "new_folder/O_output.stl",
+    "new_folder/H_output.stl",
+    "new_folder/N_output.stl",
 ]
-"""
+
 for file_to_delete in files_delete:
     try:
         os.remove(file_to_delete)
@@ -101,4 +150,13 @@ for file_to_delete in files_delete:
         print(f"File not found: {file_to_delete}")
     except Exception as e:
         print(f"An error occurred while deleting {file_to_delete}: {e}")
-"""
+
+# Check if the folder exists before attempting to delete it
+if os.path.exists(new_folder):
+    # Remove the folder and its contents
+    os.rmdir(new_folder)  # Use os.rmdir() to delete an empty folder
+    # Alternatively, use shutil.rmtree() to delete a folder and its contents, including subdirectories
+    # shutil.rmtree(new_folder)
+    print(f"{new_folder} has been deleted.")
+else:
+    print(f"{new_folder} does not exist.")
