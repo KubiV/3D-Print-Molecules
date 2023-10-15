@@ -92,7 +92,7 @@ files_delete = [
     "output.pdb",
     "script.pml",
 ]
-
+"""
 for file_to_delete in files_delete:
     try:
         os.remove(file_to_delete)
@@ -101,3 +101,4 @@ for file_to_delete in files_delete:
         print(f"File not found: {file_to_delete}")
     except Exception as e:
         print(f"An error occurred while deleting {file_to_delete}: {e}")
+"""
