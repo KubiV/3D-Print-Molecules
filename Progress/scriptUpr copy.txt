@@ -1,0 +1,27 @@
+  "cmd.load("output.pdb")",
+  "cmd.set("sphere_scale", 0.7, "all")",
+  "cmd.set("sphere_mode", 0)",
+  "cmd.set("sphere_quality", 3)",
+
+  "cmd.hide("everything")",
+  "cmd.select("carbon_atoms", "elem C")",  # Select carbon atoms
+  "cmd.show("spheres", "carbon_atoms")",  # Display carbon atoms as sticks (you can use other representations as well)
+  "cmd.save("C_output.stl", "carbon_atoms")",
+
+  "cmd.hide("everything")",
+  "cmd.select("hydrogen_atoms", "elem H")",  # Select hydrogen atoms
+  "cmd.show("spheres", "hydrogen_atoms")",  # Display hydrogen atoms as sticks (you can use other representations as well)
+  "cmd.save("H_output.stl", "hydrogen_atoms")",
+
+  "cmd.hide("everything")",
+  "cmd.select("nitrogen_atoms", "elem N")",  # Select nitrogen atoms
+  "cmd.show("spheres", "nitrogen_atoms")",  # Display nitrogen atoms as sticks (you can use other representations as well)
+      "cmd.save("N_output.stl", "nitrogen_atoms")",
+
+  "cmd.hide("everything")",
+  "cmd.select("oxygen_atoms", "elem O")",  # Select oxygen atoms
+  "cmd.show("spheres", "oxygen_atoms")",   # Display oxygen atoms as sticks (you can use other representations as well)
+  "cmd.save("O_output.stl", "oxygen_atoms")",
+
+  "cmd.show("all")",
+  "cmd.save("All_output.stl", "all")",

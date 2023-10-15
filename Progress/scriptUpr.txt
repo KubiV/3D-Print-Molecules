@@ -1,0 +1,27 @@
+  "load output.pdb",
+  "set sphere_scale, 0.7, all",
+  "set sphere_mode, 0",
+  "set sphere_quality, 3",
+
+  "hide everything",
+  "select carbon_atoms, elem C",
+  "show spheres, carbon_atoms", 
+  "save C_output.stl, carbon_atoms",
+
+  "hide everything",
+  "select hydrogen_atoms, elem H",
+  "show spheres, "hydrogen_atoms",
+  "save H_output.stl, hydrogen_atoms",
+
+  "hide everything",
+  "select nitrogen_atoms, elem N",
+  "show spheres, nitrogen_atoms", 
+  "save N_output.stl, nitrogen_atoms",
+
+  "hide everything",
+  "select oxygen_atoms, elem O", 
+  "show spheres, oxygen_atoms", 
+  "save O_output.stl, oxygen_atoms",
+
+  "show all",
+  "save All_output.stl, all",
