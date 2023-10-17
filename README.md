@@ -36,6 +36,14 @@ to be specified
 
  8.  3D print your molecule!
 
+## To do
+
+ - GUI or more intuitive text UI
+ - Integrated CID/PDB database view and number search
+ - Auto import to slicer
+ - export selection butttons (modify what exactly do you want to export, quality settings ...)
+
+
 ## Links
 
  - Incentive PyMOL - https://pymol.org/2/
