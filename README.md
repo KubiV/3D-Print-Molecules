@@ -42,6 +42,7 @@ to be specified
  - Integrated CID/PDB database view and number search
  - Auto import to slicer
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
+ - Optimize working/intermediate files saving to save space and SSD lifespan
 
 
 ## Links
