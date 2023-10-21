@@ -121,7 +121,7 @@ if not os.path.exists(new_folder):
     os.mkdir(new_folder)
 
 # Sleep for timer TimeT seconds
-time.sleep(TimeT)
+time.sleep(TimeT) #koukat jak se mění velikost nebo existence souborů - kontrola, když nemění tak jsi dál
 
 # Move the files to the new folder
 for file in files_to_move:
