@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Název molekuly</title>
+    <style>
+        /*body {
+            display: flex;
+            flex-direction: column-reverse;
+        }*/
+    </style>
+</head>
+<body>
+    <form id="molecule-form">
+        <label for="systematic-name">Systematický název molekuly (ANG):</label><br>
+        <input type="text" id="systematic-name" name="systematic-name"><br><br>
+        <input type="submit" value="Odeslat">
+    </form>
+
+    <table id="molecule-table">
+        <thead>
+            <tr>
+                <th>Systematický název molekuly</th>
+                <th>Vzorec</th>
+                <th>CID</th>
+                <th>Náhled modelu molekuly</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script type="text/javascript">
+        const form = document.getElementById('molecule-form');
+        const tableBody = document.querySelector('#molecule-table tbody');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const systematicName = document.getElementById('systematic-name').value;
+
+            fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + systematicName + '/cids/JSON')
+                .then(response => response.json())
+                .then(data => {
+                    const cid = data['IdentifierList']['CID'][0];
+
+                    fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' + cid + '/property/IUPACName,MolecularFormula,MolecularWeight,CanonicalSMILES,IsomericSMILES/JSON')
+                        .then(response => response.json())
+                        .then(data => {
+                            const iupacName = data['PropertyTable']['Properties'][0]['IUPACName'];
+                            const trivialName = data['PropertyTable']['Properties'][0]['MolecularFormula'];
+                            const cid = data['PropertyTable']['Properties'][0]['CID'];
+                            const imageUrl = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' + cid + '/PNG';
+                            //debugger;
+                            const row = tableBody.insertRow(0);
+                            const systematicNameCell = row.insertCell();
+                            const trivialNameCell = row.insertCell();
+                            const cidCell = row.insertCell();
+                            const imageCell = row.insertCell();
+
+                            systematicNameCell.innerHTML = systematicName;
+                            trivialNameCell.innerHTML = formatFormula(trivialName);
+                            cidCell.innerHTML = cid;
+
+                            cidCell.dataset.cid = cid;
+
+                            imageCell.innerHTML = '<img src="' + imageUrl + '">';
+                            
+                            cidCell.addEventListener("click",(event)=>{console.log(event.target.dataset.cid)}); //console.log -- n?co jinýho
+
+
+                            const newLine = document.createElement('br');
+                            document.body.prepend(newLine);
+                        })
+                        .catch(error => console.error(error));
+                })
+                .catch(error => console.error(error));
+        });
+
+        function formatFormula(input){
+            return input.replace(/\d/g, "<sub>$&</sub>");
+        } 
+
+    </script>
+
+</body>
+</html>
