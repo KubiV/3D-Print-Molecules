@@ -39,7 +39,7 @@ to be specified
 ## To do
 
  - GUI or more intuitive text UI
- - Integrated CID/PDB database view and number search
+ - Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
  - Auto import to slicer
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - Optimize working/intermediate files saving to save space and SSD lifespan
