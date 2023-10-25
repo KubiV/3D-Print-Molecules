@@ -44,11 +44,12 @@ to be specified
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - Optimize working/intermediate files saving to save space and SSD lifespan (io.BytesIO module)
  - one app using pyinstaller
+ - Auto-install dependencies (python modules, openBabel, PyMOL, slicer) or wizzard
 
 
 ## Links
 
  - Incentive PyMOL - https://pymol.org/2/
- - Open BAbel - http://openbabel.org/wiki/Main_Page
+ - Open Babel - http://openbabel.org/wiki/Main_Page
  - PubChem - https://pubchem.ncbi.nlm.nih.gov
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
