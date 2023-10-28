@@ -39,16 +39,17 @@ to be specified
 ## To do
 
  - GUI or more intuitive text UI
- - Integrated CID/PDB database view and number search
+ - Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
  - Auto import to slicer
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
- - Optimize working/intermediate files saving to save space and SSD lifespan
+ - Optimize working/intermediate files saving to save space and SSD lifespan (io.BytesIO module)
  - one app using pyinstaller
+ - Auto-install dependencies (python modules, openBabel, PyMOL, slicer) or wizzard
 
 
 ## Links
 
  - Incentive PyMOL - https://pymol.org/2/
- - Open BAbel - http://openbabel.org/wiki/Main_Page
+ - Open Babel - http://openbabel.org/wiki/Main_Page
  - PubChem - https://pubchem.ncbi.nlm.nih.gov
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
