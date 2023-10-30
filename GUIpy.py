@@ -31,36 +31,48 @@ def show_custom_message_box():
 def fetch_pubchem_data():
     systematic_name = systematic_name_entry.get()
 
-    pubchem_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{systematic_name}/cids/JSON"
-    response = requests.get(pubchem_url)
+    all_digits = True
 
-    if response.status_code == 200:
-        data = response.json()
-        cid = data['IdentifierList']['CID'][0]
+    for char in systematic_name:
+        if not char.isdigit():
+            all_digits = False
+            break
 
-        pubchem_property_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/IUPACName,MolecularFormula,MolecularWeight,CanonicalSMILES,IsomericSMILES/JSON"
-        response = requests.get(pubchem_property_url)
+    if all_digits == False:
+
+        pubchem_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{systematic_name}/cids/JSON"
+        response = requests.get(pubchem_url)
 
         if response.status_code == 200:
             data = response.json()
-            iupac_name = data['PropertyTable']['Properties'][0]['IUPACName']
-            trivial_name = data['PropertyTable']['Properties'][0]['MolecularFormula']
-            cid = data['PropertyTable']['Properties'][0]['CID']
-            image_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG"
+            cid = data['IdentifierList']['CID'][0]
+            print(cid)
+        
+    if all_digits == True:
+        cid = systematic_name
 
-            # Download and display the image in the Tkinter window
-            download_and_display_image(image_url)
+    pubchem_property_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/IUPACName,MolecularFormula,MolecularWeight,CanonicalSMILES,IsomericSMILES/JSON"
+    response = requests.get(pubchem_property_url)
 
-            # Update the labels in the second row with the fetched data
-            iupac_label2.config(text=str(iupac_name))
-            trivial_label2.config(text=str(trivial_name))
-            cid_label2.config(text=str(cid))
-            #image_label2.config(text=str(image_url))
+    if response.status_code == 200:
+        data = response.json()
+        iupac_name = data['PropertyTable']['Properties'][0]['IUPACName']
+        trivial_name = data['PropertyTable']['Properties'][0]['MolecularFormula']
+        cid = data['PropertyTable']['Properties'][0]['CID']
+        image_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG"
+
+        # Download and display the image in the Tkinter window
+        download_and_display_image(image_url)
+
+        # Update the labels in the second row with the fetched data
+        iupac_label2.config(text=str(iupac_name))
+        trivial_label2.config(text=str(trivial_name))
+        cid_label2.config(text=str(cid))
+        #image_label2.config(text=str(image_url))
             
-        else:
-            messagebox.showerror("Chyba", "Nepodařilo se načíst data z PubChem.")
     else:
-        messagebox.showerror("Chyba", "Nepodařilo se najít systémový název.")
+        messagebox.showerror("Chyba")
+
 
 def download_and_display_image(image_url):
     response = requests.get(image_url)
