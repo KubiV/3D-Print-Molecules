@@ -54,6 +54,16 @@ if choice == "PDB":
 with tempfile.NamedTemporaryFile(suffix=".pml", delete=False) as temp_pml_script:
     temp_pml_scriptname = temp_pml_script.name
 
+
+def elem_stl_output(elem):
+  # Create a list of commands to generate the STL for the specified element
+    return [
+        'cmd.hide("everything")',
+        'cmd.select("'+elem+'_atoms", "elem '+elem+'")',
+        'cmd.show("sphere", "'+elem+'_atoms")',
+        'cmd.save("'+elem+'_output.stl", "'+elem+'_atoms")'
+    ]
+
 # PyMOL script to execute a list of PyMOL commands
 lines_to_write = [
   var,
@@ -61,25 +71,12 @@ lines_to_write = [
   'cmd.set("sphere_mode", 0)',
   var2,
 
-  'cmd.hide("everything")',
-  'cmd.select("carbon_atoms", "elem C")',
-  'cmd.show("spheres", "carbon_atoms")',
-  'cmd.save("C_output.stl", "carbon_atoms")',
-
-  'cmd.hide("everything")',
-  'cmd.select("hydrogen_atoms", "elem H")',
-  'cmd.show("spheres", "hydrogen_atoms")',
-  'cmd.save("H_output.stl", "hydrogen_atoms")',
-
-  'cmd.hide("everything")',
-  'cmd.select("nitrogen_atoms", "elem N")',
-  'cmd.show("spheres", "nitrogen_atoms")',
-  'cmd.save("N_output.stl", "nitrogen_atoms")',
-
-  'cmd.hide("everything")',
-  'cmd.select("oxygen_atoms", "elem O")',
-  'cmd.show("spheres", "oxygen_atoms")',
-  'cmd.save("O_output.stl", "oxygen_atoms")',
+  *elem_stl_output("C"),
+  *elem_stl_output("O"),
+  *elem_stl_output("H"),
+  *elem_stl_output("N"),
+  *elem_stl_output("S"),
+  *elem_stl_output("P"),
 
   'cmd.show("spheres", "all")',
   #'cmd.save("Molecule.stl", "all")'
@@ -104,19 +101,11 @@ except Exception as e:
 
 # Define the directory where your files are located
 source_folder = '.'
-#new_folder = 'new_folder'
 zip_file_name = 'MultiBody_molecule.zip'
-files_to_move = ['C_output.stl', 'O_output.stl', 'H_output.stl', 'N_output.stl']
+files_to_move = ['C_output.stl', 'O_output.stl', 'H_output.stl', 'N_output.stl', 'S_output.stl', 'P_output.stl']
 
 temp_dir = tempfile.TemporaryDirectory()
 temp_dir_path = temp_dir.name
-
-# Create the new folder
-#os.mkdir(new_folder)  # Use os.makedirs(new_folder) to create parent directories if they don't exist
-
-# Create the new folder if it doesn't exist
-#if not os.path.exists(new_folder):
-#    os.mkdir(new_folder)
 
 def wait_for_files(files, polling_interval=1):
     while True:
@@ -170,10 +159,6 @@ files_delete = [
     temp_sdf_filename,
     temp_pdb_filename,
     temp_pml_scriptname,
-    #"new_folder/C_output.stl",
-    #"new_folder/O_output.stl",
-    #"new_folder/H_output.stl",
-    #"new_folder/N_output.stl",
     temp_dir_path,
 ]
 
@@ -185,13 +170,3 @@ for file_to_delete in files_delete:
         print(f"File not found: {file_to_delete}")
     except Exception as e:
         print(f"An error occurred while deleting {file_to_delete}: {e}")
-
-# Check if the folder exists before attempting to delete it
-#if os.path.exists(new_folder):
-    # Remove the folder and its contents
-#    os.rmdir(new_folder)  # Use os.rmdir() to delete an empty folder
-    # Alternatively, use shutil.rmtree() to delete a folder and its contents, including subdirectories
-    # shutil.rmtree(new_folder)
-#    print(f"{new_folder} has been deleted.")
-#else:
-#    print(f"{new_folder} does not exist.")
