@@ -42,7 +42,7 @@ to be specified
  - Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
  - Auto import to slicer
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
- - Optimize working/intermediate files saving to save space and SSD lifespan (tempfile or io.BytesIO module)
+ - Optimize intermediate files saving (tempfile or io.BytesIO module)✅
  - one app using pyinstaller
  - Auto-install dependencies (python modules, openBabel, PyMOL, slicer) or wizzard
 
