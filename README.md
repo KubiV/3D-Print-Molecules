@@ -52,5 +52,7 @@ to be specified
 
  - Incentive PyMOL - https://pymol.org/2/
  - Open Babel - http://openbabel.org/wiki/Main_Page
+ - Open Babel for Windows - https://github.com/openbabel/openbabel/releases
+ - Open Babel for macOS - https://formulae.brew.sh/formula/open-babel
  - PubChem - https://pubchem.ncbi.nlm.nih.gov
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
