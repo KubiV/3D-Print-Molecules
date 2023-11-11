@@ -39,6 +39,7 @@ to be specified
 ## To do
  - direct import of .pdb
  - custom relative size of bond or atom
+ - auto quit PyMOL
  - GUI or more intuitive text UI
  - Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
  - Auto import to slicer
