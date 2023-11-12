@@ -14,7 +14,7 @@ import platform
 
 os_type = platform.system()
 
-choice = input("CID/PDB: ")
+choice = input("CID number / PDB code / PDB file path (cid/pdb/file.pdb): ")
 
 if choice == "CID" or choice == "cid":
     CID = input("PubChem CID: ")
@@ -76,6 +76,14 @@ if choice == "PDB" or choice == "pdb":
     var = 'cmd.fetch("'+ PDB +'")'
     var2 = 'cmd.set("sphere_quality", 0)' # Lower the number is lower the quality - 0 is suitable for really big mocules
     TimeT = 30 # Sets the time delay needed for processing the 3D models
+
+if choice.endswith(".pdb") or choice.endswith(".pdb ") or choice.endswith(".pdb'"):
+    print("Own pdb file")
+    var = 'cmd.load("'+ choice +'")'
+    var2 = 'cmd.set("sphere_quality", 3)'
+    TimeT = 5
+else:
+    print("The input does not end with '.pdb'")
 
 with tempfile.NamedTemporaryFile(suffix=".pml", delete=False) as temp_pml_script:
     temp_pml_scriptname = temp_pml_script.name
