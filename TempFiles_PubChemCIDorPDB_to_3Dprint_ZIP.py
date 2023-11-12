@@ -1,7 +1,7 @@
 # Fist of all install the Incentive PyMOL app - https://pymol.org/
 # Search the CID of the molecule on PubChem - https://pubchem.ncbi.nlm.nih.gov
 # Or search the PDB code of the protein and choose which way do you want to enter the molecule
-# Make sure that you have set the right executable file of PyMOL for your operating system - app_to_open_with = "executable_file"
+# Make sure that you have set the right executable file of PyMOL an Open Babel for your operating system - PyMOL: app_to_open_with = "executable_file"
 
 import os
 import requests
@@ -10,10 +10,13 @@ import zipfile
 import shutil
 import time
 import tempfile
+import platform
+
+os_type = platform.system()
 
 choice = input("CID/PDB: ")
 
-if choice == "CID":
+if choice == "CID" or choice == "cid":
     CID = input("PubChem CID: ")
     url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/"+ CID +"/record/SDF?record_type=3d&response_type=display"
 
@@ -33,19 +36,42 @@ if choice == "CID":
         exit(1)
 
 
+    # Check if the temporary SDF file exists
+    if not os.path.exists(temp_sdf_filename):
+        print(f"Error: Temporary SDF file not found at {temp_sdf_filename}")
+        exit(1)
+
     with tempfile.NamedTemporaryFile(suffix=".pdb", delete=False) as temp_pdb_file:
         temp_pdb_filename = temp_pdb_file.name
 
     # Run the obabel command
-    command = ["obabel", temp_sdf_filename, "-O", temp_pdb_filename]
-    subprocess.run(command, check=True)
+    if os_type == "Darwin":
+        print ("macOS - obabel")
+        command = ["obabel", temp_sdf_filename, "-O", temp_pdb_filename]
+        subprocess.run(command, check=True)
+        print("SDF to PDB conversion completed.")
 
-    print("SDF to PDB conversion completed.")
+    if os_type == "Linux": # needs to be finished!
+        print ("Linux - obabel")
+        command = ["obabel", temp_sdf_filename, "-O", temp_pdb_filename]
+        subprocess.run(command, check=True)
+        print("SDF to PDB conversion completed.")
+
+    if os_type == "Windows":
+        print("Windows - obabel")
+        command = ["C:\Program Files\OpenBabel-3.1.1\obabel.exe", temp_sdf_filename, "-O", temp_pdb_filename] #"C:\\path\\to\\obabel.exe"
+        try:
+            # Run the obabel command
+            subprocess.run(command, check=True)
+            print("SDF to PDB conversion completed.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error running obabel: {e}")
 
     var = 'cmd.load("'+ temp_pdb_filename +'")'
     var2 = 'cmd.set("sphere_quality", 3)' # Lower the number is lower the quality - 3 is high
     TimeT = 5 # Sets the time delay needed for processing the 3D models
-if choice == "PDB":
+
+if choice == "PDB" or choice == "pdb":
     PDB = input("PDB: ")
     var = 'cmd.fetch("'+ PDB +'")'
     var2 = 'cmd.set("sphere_quality", 0)' # Lower the number is lower the quality - 0 is suitable for really big mocules
@@ -87,8 +113,17 @@ with open(temp_pml_scriptname, 'w') as file:
     for line in lines_to_write:
         file.write(line + '\n')
 
-# Specify the application or program you want to use to open the file
-app_to_open_with = "/Applications/PyMOL.app/Contents/MacOS/PyMOL" # !!! Make sure to set the adress of the executable !!!
+if os_type == "Darwin":
+    app_to_open_with = "/Applications/PyMOL.app/Contents/MacOS/PyMOL"
+    print ("macOS - PyMOL")
+
+if os_type == "Linux": # needs to be finished!
+    app_to_open_with = ""
+    print ("Linux - PyMOL")
+
+if os_type == "Windows":
+    app_to_open_with = r"C:\Users\Admin\AppData\Local\Schrodinger\PyMOL2\PyMOLWin.exe"
+    print("Windows - PyMOL")
 
 # Use the subprocess module to open the file with the specified application
 try:
