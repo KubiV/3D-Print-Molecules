@@ -39,6 +39,7 @@ to be specified
 ## To do
  - direct import of .pdb
  - custom relative size of bond or atom
+ - auto quit PyMOL
  - GUI or more intuitive text UI
  - Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
  - Auto import to slicer
@@ -52,5 +53,7 @@ to be specified
 
  - Incentive PyMOL - https://pymol.org/2/
  - Open Babel - http://openbabel.org/wiki/Main_Page
+ - Open Babel for Windows - https://github.com/openbabel/openbabel/releases
+ - Open Babel for macOS - https://formulae.brew.sh/formula/open-babel
  - PubChem - https://pubchem.ncbi.nlm.nih.gov
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
