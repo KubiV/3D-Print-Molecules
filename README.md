@@ -7,7 +7,7 @@
 
  1. Main script works in the directory, which is set in the terminal (first of all don't forget to execute `cd Folder/desired_folder` ).
 
-[`PubChemCID_to_3Dprint.py`](https://github.com/KubiV/3D-Print-Molecules/blob/main/PubChemCID_to_3Dprint.py)
+[`MultiMaterial_STL_Molecules.py`](https://github.com/KubiV/3D-Print-Molecules/blob/main/MultiMaterial_STL_Molecules.py)
 
   2. Install Incentive [PyMOL](https://pymol.org/2/) program and [Open Babel](http://openbabel.org/wiki/Main_Page)
 
