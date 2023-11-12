@@ -67,7 +67,7 @@ if choice == "CID" or choice == "cid":
         except subprocess.CalledProcessError as e:
             print(f"Error running obabel: {e}")
 
-    var = 'cmd.load("'+ temp_pdb_filename +'")'
+    var = 'cmd.load(r"'+ temp_pdb_filename +'")'
     var2 = 'cmd.set("sphere_quality", 3)' # Lower the number is lower the quality - 3 is high
     TimeT = 5 # Sets the time delay needed for processing the 3D models
 
@@ -79,7 +79,7 @@ if choice == "PDB" or choice == "pdb":
 
 if choice.endswith(".pdb") or choice.endswith(".pdb ") or choice.endswith(".pdb'"):
     print("Own pdb file")
-    var = 'cmd.load("'+ choice +'")'
+    var = 'cmd.load(r"'+ choice +'")'
     var2 = 'cmd.set("sphere_quality", 3)'
     TimeT = 5
 else:
