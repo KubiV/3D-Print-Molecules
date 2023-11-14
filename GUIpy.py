@@ -1,6 +1,7 @@
 import subprocess
 import os
 import re
+from helper_functions import generate_model
 
 modules_to_install = ["tkinter", "PIL"]
 
@@ -13,6 +14,7 @@ for module in modules_to_install:
 import tkinter as tk
 from tkinter import messagebox, Label
 from PIL import Image, ImageTk
+from io import BytesIO
 import requests
 import zipfile
 import shutil
@@ -59,6 +61,7 @@ def fetch_data():
 
 def fetch_file_data():
     file_path = systematic_name_entry.get()
+    return file_path
 
 def fetch_pubchem_data():
     systematic_name = systematic_name_entry.get()
@@ -205,8 +208,19 @@ def download_and_display_image(image_url):
 root = tk.Tk()
 root.title("Molecule Data")
 
-# Chech if PyMOL installed
-path_to_pymol = "/Applications/PyMOL.app/Contents/MacOS/PyMOL"
+os_type = platform.system()
+
+if os_type == "Darwin":
+    path_to_pymol = "/Applications/PyMOL.app/Contents/MacOS/PyMOL"
+    print ("macOS - PyMOL")
+
+if os_type == "Linux": # needs to be finished!
+    path_to_pymol = ""
+    print ("Linux - PyMOL")
+
+if os_type == "Windows":
+    path_to_pymol = r"C:\Users\Admin\AppData\Local\Schrodinger\PyMOL2\PyMOLWin.exe"
+    print("Windows - PyMOL")
 
 if os.path.exists(path_to_pymol):
     print("PyMOL exists at the specified path.")
@@ -219,6 +233,12 @@ systematic_name_label = tk.Label(root, text="Zadej systémový název:")
 systematic_name_label.pack()
 systematic_name_entry = tk.Entry(root)
 systematic_name_entry.pack()
+
+def fetch_data_on_enter(event):
+    fetch_data()
+
+systematic_name_entry.bind('<Return>', fetch_data_on_enter)  # Bind Enter key to fetch_data function
+
 fetch_button = tk.Button(root, text="Získat data", command=fetch_data)
 fetch_button.pack()
 
@@ -239,8 +259,8 @@ cid_label2.grid(row=1, column=2)
 image_label2 = Label(table_frame, text="", borderwidth=0, relief="solid", width=20)
 image_label2.grid(row=1, column=3)
 
-
-
+generate_model_button = tk.Button(root, text="Generuj model", command=lambda:generate_model(systematic_name_entry.get(), determine_input_type(systematic_name_entry.get()), path_to_pymol))
+generate_model_button.pack()
 
 # Start the Tkinter main loop
 root.mainloop()
