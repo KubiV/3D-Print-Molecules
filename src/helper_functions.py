@@ -14,7 +14,22 @@ import platform
 
 os_type = platform.system()
 
+def close_application(app_name, app_path):
+    system_platform = platform.system()
+
+    if system_platform == "Darwin":  # macOS
+        subprocess.run(['pkill', '-f', app_name])
+        print("Quitting app")
+    elif system_platform == "Windows":
+        os.system(f'taskkill /f /im "{os.path.basename(app_path)}"')
+        print("Quitting app")
+    else:
+        print("Unsupported operating system")
+
 def generate_model(input_str, input_type, path_to_pymol):
+
+    quality = str(3)
+    input_str = str(input_str)
 
     # Initialize with a default value
     temp_sdf_filename = None  
@@ -71,7 +86,7 @@ def generate_model(input_str, input_type, path_to_pymol):
                 print(f"Error running obabel: {e}")
 
         var1 = 'cmd.load(r"'+ temp_pdb_filename +'")'
-        var2 = 'cmd.set("sphere_quality", 3)' # Lower the number is lower the quality - 3 is high
+        var2 = 'cmd.set("sphere_quality", '+quality+')' # Lower the number is lower the quality - 3 is high - we use default sphere quality 3
         model_type = "sphere"
         save_all = None
         #TimeT = 5 # Sets the time delay needed for processing the 3D models
@@ -79,7 +94,7 @@ def generate_model(input_str, input_type, path_to_pymol):
     if input_type == "PDB":
         temp_pdb_filename = None
         var1 = 'cmd.fetch("'+ input_str +'")'
-        var2 = 'cmd.set("sphere_quality", 1)' # Lower the number is lower the quality - 0 is suitable for really big mocules
+        var2 = 'cmd.set("sphere_quality", '+quality+')' # Lower the number is lower the quality - 0 is suitable for really big mocules - we use default surface quality 1
         model_type = "surface"
         save_all = 'cmd.save("Molecule.stl", "all")'
         #TimeT = 30 # Sets the time delay needed for processing the 3D models
@@ -88,7 +103,7 @@ def generate_model(input_str, input_type, path_to_pymol):
         if input_str.endswith(".pdb") or input_str.endswith(".pdb ") or input_str.endswith(".pdb'"):
             print("Own pdb file")
             var1 = 'cmd.load(r"'+ input_str +'")'
-            var2 = 'cmd.set("sphere_quality", 3)'
+            var2 = 'cmd.set("sphere_quality", '+quality+')'#default sphere quality 3
             model_type = "sphere"
             save_all = None
             #TimeT = 5
@@ -114,7 +129,7 @@ def generate_model(input_str, input_type, path_to_pymol):
         'cmd.set("sphere_scale", 0.7, "all")',
         'cmd.set("sphere_mode", 0)',
         'cmd.set("solvent_radius", 0.5)',
-        'cmd.set("surface_quality", 1)',
+        'cmd.set("surface_quality", 1)',# default surface quality 1
         var2,
 
         *elem_stl_output("C"),
@@ -131,7 +146,8 @@ def generate_model(input_str, input_type, path_to_pymol):
 
     with open(temp_pml_scriptname, 'w') as file:
         for line in lines_to_write:
-            file.write(line + '\n')
+            if line is not None:
+                file.write(str(line) + '\n')
 
     # Use the subprocess module to open the file with the specified application
     try:
@@ -216,3 +232,5 @@ def generate_model(input_str, input_type, path_to_pymol):
             print(f"File not found: {file_to_delete}")
         except Exception as e:
             print(f"An error occurred while deleting {file_to_delete}: {e}")
+
+    close_application("PyMOL", path_to_pymol)

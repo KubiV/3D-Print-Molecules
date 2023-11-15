@@ -1,18 +1,25 @@
 import subprocess
 import os
 import re
+import importlib
 from helper_functions import generate_model
 
-modules_to_install = ["tkinter", "PIL"]
+modules_to_install = ["tkinter", "PIL", "io", "requests", "zipfile", "shutil", "tempfile", "platform"]
 
 for module in modules_to_install:
     try:
-        subprocess.check_call(['pip3', 'install', module])
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to install {module}: {e}")
+        importlib.import_module(module)
+        print(f"{module} is already installed.")
+    except ImportError:
+        try:
+            subprocess.check_call(['pip3', 'install', module])
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to install {module}: {e}")
 
 import tkinter as tk
 from tkinter import messagebox, Label
+from tkinter import filedialog
+from tkinter import ttk
 from PIL import Image, ImageTk
 from io import BytesIO
 import requests
@@ -21,6 +28,15 @@ import shutil
 import time
 import tempfile
 import platform
+
+def browse_folder():
+    global folder_path
+    folder_path = filedialog.askdirectory()
+    if folder_path:
+        # Update your GUI or store the selected folder_path as needed
+        os.chdir(folder_path)
+        selected_folder_label.config(text="Složka pro export: " + folder_path)
+        print("Destination directory:"+folder_path)
 
 def PyMOL_downloadpage():
     import webbrowser
@@ -35,6 +51,26 @@ def show_custom_message_box():
     open_button = tk.Button(custom_box, text="Open Web Link to PyMOL", command=PyMOL_downloadpage)
     open_button.pack()
 
+def update_value(value):
+    # Update the variable with the selected value
+    selected_value.set(value)
+
+def update_label():
+    # Get the selected value from the DoubleVar
+    current_value = selected_value.get()
+
+    # Round the selected value to one decimal place
+    rounded_value = round(current_value, 1)
+
+    # Update the label text
+    value_label.config(text=f"Kvalita: {rounded_value}")
+
+    # Print the rounded value
+    print("Rounded Value:", rounded_value)
+
+    # Store the rounded value in the variable
+    rounded_value_var.set(rounded_value)
+
 def determine_input_type(input_str):
     if input_str.isdigit() or input_str.isalpha():
         return "CID"
@@ -44,6 +80,8 @@ def determine_input_type(input_str):
         return "File"
     else:
         return "Unknown"
+    
+model_template = None 
 
 def fetch_data():
     input_str = systematic_name_entry.get()
@@ -61,11 +99,20 @@ def fetch_data():
 
 def fetch_file_data():
     file_path = systematic_name_entry.get()
-    return file_path
+    global model_template
+    model_template = file_path
+    print(model_template)
+
+    # Add labels for the columns in the first row
+    iupac_label1 = Label(table_frame, text="Soubor", borderwidth=1, relief="solid", width=20)
+    iupac_label1.grid(row=0, column=0)
+
+    # Update the labels in the second row with the fetched data
+    iupac_label2.config(text= str(file_path))   
 
 def fetch_pubchem_data():
     systematic_name = systematic_name_entry.get()
-
+    global model_template
     all_digits = True
 
     for char in systematic_name:
@@ -81,7 +128,9 @@ def fetch_pubchem_data():
         if response.status_code == 200:
             data = response.json()
             cid = data['IdentifierList']['CID'][0]
-            print(cid)
+            model_template = cid
+            print(model_template)
+            #print(cid)     
         
     if all_digits == True:
         cid = systematic_name
@@ -120,10 +169,13 @@ def fetch_pubchem_data():
         #image_label2.config(text=str(image_url))
             
     else:
-        messagebox.showerror("Chyba")
+        messagebox.showerror("Chyba")    
 
 def fetch_pdb_data():
+    global model_template
     pdb_code = systematic_name_entry.get()
+    model_template = pdb_code
+    print(model_template)
     fetch_pdb_data_from_api(pdb_code)
 
 def fetch_pdb_data_from_api(pdb_code):
@@ -259,7 +311,32 @@ cid_label2.grid(row=1, column=2)
 image_label2 = Label(table_frame, text="", borderwidth=0, relief="solid", width=20)
 image_label2.grid(row=1, column=3)
 
-generate_model_button = tk.Button(root, text="Generuj model", command=lambda:generate_model(systematic_name_entry.get(), determine_input_type(systematic_name_entry.get()), path_to_pymol))
+# File browsing
+browse_button = tk.Button(root, text="Procházej složky", command=browse_folder)
+browse_button.pack(pady=10)
+
+selected_folder_label = tk.Label(root, text="Selected Folder: ")
+selected_folder_label.pack()
+
+# Quality picker
+selected_value = tk.DoubleVar()
+
+value_scale = ttk.Scale(root, from_=0, to=5, orient=tk.HORIZONTAL, length=200, variable=selected_value, command=update_value)
+value_scale.pack(padx=20, pady=20)
+
+value_label = ttk.Label(root, text="Kvalita: 0.0")
+value_label.pack()
+
+rounded_value_var = tk.DoubleVar()
+
+update_button = ttk.Button(root, text="Ulož kvalitu (nefunguje)", command=update_label)
+update_button.pack(pady=10)
+
+if determine_input_type(systematic_name_entry.get()) == "CID":
+    rounded_value_var.set(3)
+
+# Button for generating the model
+generate_model_button = tk.Button(root, text="Generuj model", command=lambda:generate_model(model_template, determine_input_type(systematic_name_entry.get()), path_to_pymol))
 generate_model_button.pack()
 
 # Start the Tkinter main loop
