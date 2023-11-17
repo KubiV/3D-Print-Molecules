@@ -1,0 +1,16 @@
+# Multi-coloured Molecules STL Generator
+
+## Version: 1.0.0
+
+### Description
+Generate a single file including separate atoms to 3D print a molecule in color.
+
+### Author
+- **Name:** Jakub Vávra
+- **Email:** j.vavra@sh.cvut.cz
+
+### License
+CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+
+### Project URL
+[GitHub Repository](https://github.com/KubiV/3D-Print-Molecules)

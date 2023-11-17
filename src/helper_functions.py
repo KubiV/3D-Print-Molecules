@@ -14,6 +14,21 @@ import platform
 
 os_type = platform.system()
 
+def get_filename_without_extension(pdb_file_path):
+    # Check if the given path is a file
+    if os.path.isfile(pdb_file_path):
+        # Split the file path into the directory and the file name with extension
+        directory, full_filename = os.path.split(pdb_file_path)
+        
+        # Split the file name and extension
+        filename, file_extension = os.path.splitext(full_filename)
+        
+        # Return the file name without extension
+        return filename
+    else:
+        print(f"{pdb_file_path} is not a valid file path.")
+        return pdb_file_path
+
 def close_application(app_name, app_path):
     system_platform = platform.system()
 
@@ -52,7 +67,6 @@ def generate_model(input_str, input_type, path_to_pymol):
         else:
             print(f"Failed to download the file. Status code: {response.status_code}")
             exit(1)
-
 
         # Check if the temporary SDF file exists
         if not os.path.exists(temp_sdf_filename):
@@ -159,8 +173,9 @@ def generate_model(input_str, input_type, path_to_pymol):
         print(f"An error occurred: {e}")
 
     # Define the directory where your files are located
+    zip_name = get_filename_without_extension(input_str)
     source_folder = '.'
-    zip_file_name = 'MultiBody_molecule.zip'
+    zip_file_name = 'MultiBody_molecule_'+ zip_name +'.zip'
     files_to_move = ['C_output.stl', 'O_output.stl', 'H_output.stl', 'N_output.stl', 'S_output.stl', 'P_output.stl']
 
     temp_dir = tempfile.TemporaryDirectory()
