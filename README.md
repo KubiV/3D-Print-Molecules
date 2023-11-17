@@ -39,8 +39,8 @@ to be specified
 ## To do
  - Auto import to slicer
 - export selection butttons (modify what exactly do you want to export, quality settings ...)
- - one app using pyinstaller
  - custom relative size of bond or atom
+- ✅one app using pyinstaller
  - ✅ direct import of .pdb
  - ✅ auto quit PyMOL
  - ✅ GUI or more intuitive text UI
