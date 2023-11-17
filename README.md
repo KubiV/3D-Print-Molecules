@@ -38,9 +38,9 @@ to be specified
 
 ## To do
  - Auto import to slicer
-- export selection butttons (modify what exactly do you want to export, quality settings ...)
+ - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - custom relative size of bond or atom
-- ✅one app using pyinstaller
+ - ✅one app using pyinstaller
  - ✅ direct import of .pdb
  - ✅ auto quit PyMOL
  - ✅ GUI or more intuitive text UI
@@ -51,7 +51,7 @@ to be specified
 ## Common problems
 
  - Not installed Python - see links
- - Not installed Pillow module - rin [pip3 install Pillow] in python
+ - Not installed Pillow module - rin [`pip3 install Pillow`] in python
  - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded)
  - Not installed Open Babel - see links
 
