@@ -51,7 +51,7 @@ to be specified
 ## Common problems
 
  - Not installed Python - see links
- - Not installed Pillow module - rin [`pip3 install Pillow`] in python
+ - Not installed Pillow module - run `pip3 install Pillow` in python
  - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded)
  - Not installed Open Babel - see links
 
