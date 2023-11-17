@@ -16,7 +16,7 @@ import re
 import importlib
 from helper_functions import generate_model
 
-modules_to_install = ["tkinter", "PIL", "io", "requests", "zipfile", "shutil", "tempfile", "platform", "tkinterdnd2"]
+modules_to_install = ["tkinter", "Pillow", "io", "requests", "zipfile", "shutil", "tempfile", "platform"]
 
 for module in modules_to_install:
     try:
@@ -32,7 +32,6 @@ import tkinter as tk
 from tkinter import messagebox, Label
 from tkinter import filedialog
 from tkinter import ttk
-from tkinterdnd2 import TkinterDnD, DND_FILES
 from PIL import Image, ImageTk
 from io import BytesIO
 import requests

@@ -36,8 +36,11 @@ def close_application(app_name, app_path):
         subprocess.run(['pkill', '-f', app_name])
         print("Quitting app")
     elif system_platform == "Windows":
-        os.system(f'taskkill /f /im "{os.path.basename(app_path)}"')
-        print("Quitting app")
+        try:
+            subprocess.run(['taskkill', '/f', '/im', os.path.basename(app_path)], check=True)
+            print("Quitting app")
+        except subprocess.CalledProcessError:
+            print(f"Failed to quit {app_name}")
     else:
         print("Unsupported operating system")
 
