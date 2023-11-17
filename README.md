@@ -52,7 +52,7 @@ to be specified
 
  - Not installed Python - see links
  - Not installed Pillow module - run `pip3 install Pillow` in python
- - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded)
+ - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded) - see links
  - Not installed Open Babel - see links
 
 ## Links
