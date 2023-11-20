@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-# pyinstaller --onefile --windowed --icon=graphical/default_icon.icns src/main.py
+
 
 a = Analysis(
     ['src/main.py'],
@@ -11,7 +11,7 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    noarchive=False,
+    noarchive=True,
 )
 pyz = PYZ(a.pure)
 
@@ -20,9 +20,9 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    [],
+    [('v', None, 'OPTION')],
     name='main',
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,

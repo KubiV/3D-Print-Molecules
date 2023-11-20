@@ -1,0 +1,4 @@
+([('3D print Multi-color Molecules',
+   '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/dist/3D print '
+   'Multi-color Molecules',
+   'EXECUTABLE')],)

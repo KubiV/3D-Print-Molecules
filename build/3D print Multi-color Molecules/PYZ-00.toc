@@ -1,0 +1,3 @@
+('/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/build/3D print '
+ 'Multi-color Molecules/PYZ-00.pyz',
+ [])

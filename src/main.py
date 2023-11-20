@@ -16,7 +16,7 @@ import re
 import importlib
 from helper_functions import generate_model
 
-modules_to_install = ["tkinter", "Pillow", "io", "requests", "zipfile", "shutil", "tempfile", "platform"]
+modules_to_install = ["tkinter", "Pillow", "io", "requests", "zipfile", "shutil", "tempfile", "platform", "webbrowser"]
 
 for module in modules_to_install:
     try:
@@ -40,6 +40,7 @@ import shutil
 import time
 import tempfile
 import platform
+import webbrowser
 
 def browse_folder():
     global folder_path
@@ -57,20 +58,26 @@ def browse_file():
     if file_path:
         systematic_name_entry.delete(0, tk.END)  # Clear the current entry
         systematic_name_entry.insert(0, file_path)  # Insert the selected file path
-        fetch_data()  # Call fetch_data with the selected file path
+        fetch_data()  # Call fetch_data with the selected file path   
 
-def PyMOL_downloadpage():
-    import webbrowser
-    webbrowser.open("https://pymol.org/2/")
+def open_link(url):
+    webbrowser.open(url)
 
 def show_custom_message_box():
     custom_box = tk.Toplevel()
-    custom_box.title("Install PyMOL")
-    message = "Please download the Incentive PyMOL app"
-    message_label = tk.Label(custom_box, text=message)
+    custom_box.title("Install missing programs")
+    message1 = "Please download the Incentive PyMOL app"
+    message_label = tk.Label(custom_box, text=message1)
     message_label.pack()
-    open_button = tk.Button(custom_box, text="Open Web Link to PyMOL", command=PyMOL_downloadpage)
+    open_button = tk.Button(custom_box, text="Open Web Link to PyMOL", command=lambda:open_link("https://pymol.org/2/"))
     open_button.pack()
+    message2 = "Please also download Open Babel"
+    message_label = tk.Label(custom_box, text=message2)
+    message_label.pack()
+    open_button2 = tk.Button(custom_box, text="Open Web Link to Open Babel macOS", command=lambda:open_link("https://formulae.brew.sh/formula/open-babel"))
+    open_button3 = tk.Button(custom_box, text="Open Web Link to Open Babel Windows", command=lambda:open_link("https://github.com/openbabel/openbabel/releases"))
+    open_button2.pack()
+    open_button3.pack()
 
 def update_value(value):
     # Update the variable with the selected value
@@ -279,13 +286,13 @@ def download_and_display_image(image_url):
 
 # Create the main Tkinter window
 root = tk.Tk()
-root.title("Molecule Data")
+root.title("3D print Multi-color Molecules")
 
 # OS selection
 os_type = platform.system()
 
 if os_type == "Darwin":
-    path_to_pymol = "/Applications/PyMOL.app/Contents/MacOS/PyMOL"
+    path_to_pymol = os.path.normpath("/Applications/PyMOL.app/Contents/MacOS/PyMOL")
     print ("macOS - PyMOL")
 
 if os_type == "Linux": # needs to be finished!

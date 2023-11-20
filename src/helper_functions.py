@@ -33,7 +33,7 @@ def close_application(app_name, app_path):
     system_platform = platform.system()
 
     if system_platform == "Darwin":  # macOS
-        subprocess.run(['pkill', '-f', app_name])
+        subprocess.run(['pkill', '-f', app_name], shell=True)
         print("Quitting app")
     elif system_platform == "Windows":
         try:
@@ -65,6 +65,7 @@ def generate_model(input_str, input_type, path_to_pymol):
             with tempfile.NamedTemporaryFile(suffix=".sdf", delete=False) as temp_sdf_file:
                 temp_sdf_filename = temp_sdf_file.name
                 temp_sdf_file.write(response.content)
+                temp_sdf_path = os.path.join(tempfile.gettempdir(), temp_sdf_filename)
 
             print(f"File saved as {temp_sdf_filename}")
         else:
@@ -72,23 +73,24 @@ def generate_model(input_str, input_type, path_to_pymol):
             exit(1)
 
         # Check if the temporary SDF file exists
-        if not os.path.exists(temp_sdf_filename):
+        if not os.path.exists(temp_sdf_path):
             print(f"Error: Temporary SDF file not found at {temp_sdf_filename}")
             exit(1)
 
         with tempfile.NamedTemporaryFile(suffix=".pdb", delete=False) as temp_pdb_file:
             temp_pdb_filename = temp_pdb_file.name
+            temp_pdb_path = os.path.join(tempfile.gettempdir(), temp_pdb_filename)
 
         # Run the obabel command
         if os_type == "Darwin":
             print ("macOS - obabel")
-            command = ["obabel", temp_sdf_filename, "-O", temp_pdb_filename]
+            command = ["obabel", temp_sdf_path, "-O", temp_pdb_filename]
             subprocess.run(command, check=True)
             print("SDF to PDB conversion completed.")
 
         if os_type == "Linux": # needs to be finished!
             print ("Linux - obabel")
-            command = ["obabel", temp_sdf_filename, "-O", temp_pdb_filename]
+            command = ["obabel", temp_sdf_path, "-O", temp_pdb_filename]
             subprocess.run(command, check=True)
             print("SDF to PDB conversion completed.")
 
@@ -102,7 +104,7 @@ def generate_model(input_str, input_type, path_to_pymol):
             except subprocess.CalledProcessError as e:
                 print(f"Error running obabel: {e}")
 
-        var1 = 'cmd.load(r"'+ temp_pdb_filename +'")'
+        var1 = 'cmd.load(r"'+ temp_pdb_path +'")'
         var2 = 'cmd.set("sphere_quality", '+quality+')' # Lower the number is lower the quality - 3 is high - we use default sphere quality 3
         model_type = "sphere"
         save_all = None
@@ -129,7 +131,7 @@ def generate_model(input_str, input_type, path_to_pymol):
 
     with tempfile.NamedTemporaryFile(suffix=".pml", delete=False) as temp_pml_script:
         temp_pml_scriptname = temp_pml_script.name
-
+        temp_pml_script_path = os.path.join(tempfile.gettempdir(), temp_pml_scriptname)
 
     def elem_stl_output(elem):
     # Create a list of commands to generate the STL for the specified element
@@ -168,7 +170,7 @@ def generate_model(input_str, input_type, path_to_pymol):
 
     # Use the subprocess module to open the file with the specified application
     try:
-        subprocess.Popen([path_to_pymol, temp_pml_scriptname])
+        subprocess.Popen([path_to_pymol, temp_pml_script_path])
         print(f"Opening {temp_pml_scriptname} with {path_to_pymol}...")
     except FileNotFoundError:
         print(f"Error: The specified application '{path_to_pymol}' was not found.")
