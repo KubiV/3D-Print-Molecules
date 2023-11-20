@@ -40,6 +40,7 @@ to be specified
  - Auto import to slicer
 - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - custom relative size of bond or atom
+ - add a settings tab (manualy edit paths for PyMOL and Open Babel)
 - ✅one app using pyinstaller
  - ✅ direct import of .pdb
  - ✅ auto quit PyMOL
