@@ -38,10 +38,10 @@ to be specified
 
 ## To do
  - Auto import to slicer
-- export selection butttons (modify what exactly do you want to export, quality settings ...)
+ - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - custom relative size of bond or atom
  - add a settings tab (manualy edit paths for PyMOL and Open Babel)
-- ✅one app using pyinstaller
+ - ✅one app using pyinstaller
  - ✅ direct import of .pdb
  - ✅ auto quit PyMOL
  - ✅ GUI or more intuitive text UI
@@ -49,12 +49,21 @@ to be specified
  - ✅ Optimize intermediate files saving (tempfile or io.BytesIO module)
  - ✅ Auto-install dependencies (python modules, openBabel, PyMOL, slicer) or wizzard
 
+## Common problems
+
+ - Not installed Python - see links
+ - Not installed Pillow module - run `pip3 install Pillow` in python
+ - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded) - see links
+ - Not installed Open Babel - see links
 
 ## Links
 
+ - Python for Windows - https://apps.microsoft.com/detail/python-3-12/9NCVDN91XZQP
  - Incentive PyMOL - https://pymol.org/2/
  - Open Babel - http://openbabel.org/wiki/Main_Page
  - Open Babel for Windows - https://github.com/openbabel/openbabel/releases
  - Open Babel for macOS - https://formulae.brew.sh/formula/open-babel
- - PubChem - https://pubchem.ncbi.nlm.nih.gov
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
+
+ - PubChem - https://pubchem.ncbi.nlm.nih.gov
+ - RCSB PDB Protein Data Bank - https://www.rcsb.org
