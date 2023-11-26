@@ -56,6 +56,12 @@ to be specified
  - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded) - see links
  - Not installed Open Babel - see links
 
+## Pyinstaller
+
+`pyinstaller --onefile --windowed --name "3D print Multi-color Molecules" --icon=graphical/default_icon.icns --debug=all src/main.py`
+
+`pyinstaller -y --clean -F -w -i graphical/default_icon.icns --debug=all src/main.py`
+
 ## Links
 
  - Python for Windows - https://apps.microsoft.com/detail/python-3-12/9NCVDN91XZQP
