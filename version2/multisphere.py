@@ -66,7 +66,12 @@ def main():
     resolution = 100
 
     # Define the translation vectors for each sphere
-    translation_vectors = ['np.array([101.263 132.51   19.074])', 'np.array([ 98.757 132.171  16.304])', 'np.array([ 95.002 127.923  25.94 ])', 'np.array([ 97.195 136.775  16.142])', 'np.array([100.911 130.999  18.214])', 'np.array([ 96.821 125.429  26.398])', 'np.array([ 93.002 127.452  25.547])', 'np.array([101.092 131.88   15.889])', 'np.array([ 95.78  127.31   28.233])', 'np.array([ 99.841 128.736  17.589])', 'np.array([ 98.543 127.251  27.255])', 'np.array([ 98.563 128.615  15.875])', 'np.array([ 97.138 129.402  26.46 ])', 'np.array([ 97.288 129.604  18.106])', 'np.array([ 98.309 128.578  24.85 ])', 'np.array([ 91.942 123.873  23.603])', 'np.array([ 98.873 128.665  19.79 ])', 'np.array([ 98.358 125.529  24.768])', 'np.array([ 94.28  123.25   23.457])', 'np.array([ 96.012 124.771  24.383])', 'np.array([100.542 138.616  18.783])', 'np.array([ 91.179 127.363  26.151])', 'np.array([ 89.556 127.102  25.55 ])', 'np.array([ 97.748 129.913  20.409])', 'np.array([ 99.759 126.507  25.112])', 'np.array([101.481 137.266  19.379])']
+    translation_vectors = [
+        np.array([1.0, 2.0, 3.0]),
+        np.array([-2.0, 0.0, 1.0]),
+        np.array([0.0, -2.0, 0.0]),
+        np.array([1.0, -2.0, 0.0])
+    ]
 
     # Save all spheres in one STL file
     create_and_save_multiple_spheres(radius, resolution, translation_vectors, "combined_spheres.stl")
