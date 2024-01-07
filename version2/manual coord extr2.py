@@ -6,6 +6,8 @@ from multisphere import create_and_save_multiple_spheres
 pattern1 = r'^HETATM\s+(\d+)\s+([A-Za-z0-9]+(?:-[A-Za-z0-9]+)?)\s+([A-Za-z0-9]+)\s*([A-Za-z]?)\s*(\d*)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s*([A-Za-z]*)\s*$'
 pattern2 = r'^HETATM\s+(\d+)\s+(\S+)\s+(\w+)\s+(\w+)\s+(\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+(\S+)'
 
+patterns = {'pattern1': pattern1, 'pattern2': pattern2}
+
 # Example strings
 example_string = "HETATM    1  O   UNL     1      -0.668   1.159   0.257  1.00  0.00           O"
 example_string1 = "HETATM    2  H   HOH     0       3.074   0.155   0.000  1.00  0.00           H"
@@ -56,9 +58,6 @@ def match_values(match, pattern):
         print()
 
 def extract_values(data_lines):
-    # Applying the regex patterns
-    patterns = {'pattern1': pattern1, 'pattern2': pattern2}
-
     for line in data_lines:
         print(f"Example Line: {line}")
 
@@ -90,9 +89,6 @@ def match_coord(match, pattern):
         print()
 
 def extract_coord(data_lines):
-    # Applying the regex patterns
-    patterns = {'pattern1': pattern1, 'pattern2': pattern2}
-    
     # Dictionary to store coordinates for each atom type
     atom_coordinates = {}
 
@@ -127,25 +123,25 @@ def extract_coord(data_lines):
     return atom_coordinates
 
 # Read PDB file and extract lines
-pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/gluk.pdb'  # Replace with the actual file name
+pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/NAD.pdb'  # Replace with the actual file name
 with open(pdb_filename, 'r') as pdb_file:
     pdb_lines = pdb_file.readlines()
 
 coordinates = extract_coord(pdb_lines)
-#print(result)
+print(coordinates)
 
 # Accessing coordinates for specific atom types
-h_coordinates = coordinates.get('H', [])
-o_coordinates = coordinates.get('O', [])
-c_coordinates = coordinates.get('C', [])
+#h_coordinates = coordinates.get('H', [])
+#o_coordinates = coordinates.get('O', [])
+#c_coordinates = coordinates.get('C', [])
 
-print('Hydrogen:', h_coordinates)
-print('Oxygen:', o_coordinates)
-print('Carbon:', c_coordinates)
+#print('Hydrogen:', h_coordinates)
+#print('Oxygen:', o_coordinates)
+#print('Carbon:', c_coordinates)
 
 radius = 0.7
 resolution = 100
 
-create_and_save_multiple_spheres(1.2*radius, resolution, h_coordinates, "h_atoms.stl")
-create_and_save_multiple_spheres(1.52*radius, resolution, o_coordinates, "o_atoms.stl")
-create_and_save_multiple_spheres(1.7*radius, resolution, c_coordinates, "c_atoms.stl")
+#create_and_save_multiple_spheres(1.2*radius, resolution, h_coordinates, "h_atoms.stl")
+#create_and_save_multiple_spheres(1.52*radius, resolution, o_coordinates, "o_atoms.stl")
+#create_and_save_multiple_spheres(1.7*radius, resolution, c_coordinates, "c_atoms.stl")
