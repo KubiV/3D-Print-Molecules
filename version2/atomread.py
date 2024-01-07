@@ -56,7 +56,7 @@ def extract_coordinates2(pdb_filename):
 
 
 # Example usage
-pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/gluk.pdb'
+pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/NAD.pdb'
 coordinates = extract_coordinates2(pdb_filename)
 
 print(coordinates)
@@ -64,12 +64,9 @@ print(coordinates)
 #for key in coordinates:
 #    print(key)
 
-
 #specific_atom_coordinates = {}
 #for key in coordinates:
 #    specific_atom_coordinates[f'{key}_coordinates'] = coordinates.get(key, [])
-
-
 
 # Accessing coordinates for specific atom types
 h_coordinates = coordinates.get('H', [])
@@ -77,7 +74,6 @@ o_coordinates = coordinates.get('O', [])
 c_coordinates = coordinates.get('C', [])
 p_coordinates = coordinates.get('P', [])
 n_coordinates = coordinates.get('N', [])
-
 
 #print(coordinates)
 
