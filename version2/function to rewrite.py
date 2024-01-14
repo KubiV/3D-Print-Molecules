@@ -48,7 +48,7 @@ def browse_file():
 def open_link(url):
     webbrowser.open(url)
 
-    def determine_input_type(input_str):
+def determine_input_type(input_str):
     if input_str.isdigit() or input_str.isalpha():
         return "CID"
     elif re.match(r'^[a-zA-Z0-9]{4}$', input_str):
