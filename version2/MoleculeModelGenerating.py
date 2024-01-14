@@ -1,7 +1,10 @@
 import re
 import numpy as np
-from multisphere import create_and_save_multiple_spheres 
+from ModelGenerating import create_and_save_multiple_spheres 
 import csv
+import os
+
+#--- Example data ---#
 
 # Your regex patterns
 pattern1 = r'^HETATM\s+(\d+)\s+([A-Za-z0-9]+(?:-[A-Za-z0-9]+)?)\s+([A-Za-z0-9]+)\s*([A-Za-z]?)\s*(\d*)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s*([A-Za-z]*)\s*$'
@@ -30,6 +33,8 @@ pdb_lines = [
     'HETATM   6  H  H2  A   1       99.759 126.507  25.112  1.00  0.00           H',
     'HETATM   7  H  H2  A   1      101.481 137.266  19.379  1.00  0.00           H',
 ]
+
+#--- Testing code ---#
 
 def match_values(match, pattern):
     if match:
@@ -80,7 +85,7 @@ def extract_values(data_lines):
             match = re.match(pattern, line)
             match_values(match, pattern)
 
-#--------------
+#--- Used code ---#
 
 def match_coord(match, pattern, a, b, c, d):
     if match:
@@ -147,13 +152,7 @@ def find_radius(csv_filename, target_value):
     # If no match is found, return None or an appropriate value
     return None
 
-# Load data from the CSV file
-csv_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/PubChemElements_all.csv'
-pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/NAD.pdb'  # Replace with the actual file name
-radius_factor = 0.7
-resolution = 100
-
-def make_molecule_stl(pdb_filename, resolution, radius_factor):
+def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor):
     # Read PDB file and extract lines
     with open(pdb_filename, 'r') as pdb_file:
         pdb_lines = pdb_file.readlines()
@@ -165,20 +164,18 @@ def make_molecule_stl(pdb_filename, resolution, radius_factor):
         radius = find_radius(csv_filename, key)
         create_and_save_multiple_spheres(radius * radius_factor, resolution, coordinates, f"{key}_atoms.stl")
 
-make_molecule_stl(pdb_filename, resolution, radius_factor)
-# Accessing coordinates for specific atom types
-#h_coordinates = coordinates.get('H', [])
-#o_coordinates = coordinates.get('O', [])
-#c_coordinates = coordinates.get('C', [])
-#p_coordinates = coordinates.get('P', [])
-#n_coordinates = coordinates.get('N', [])
+#--- Example test usage ---#
 
-#print('Hydrogen:', h_coordinates)
-#print('Oxygen:', o_coordinates)
-#print('Carbon:', c_coordinates)
+# Load data from the CSV file
+csv_filename = 'PubChemElements_all.csv'
+csv_path = os.path.abspath(__file__)
+csv_absolute_path = os.path.join(os.path.dirname(csv_path), csv_filename)
 
-#create_and_save_multiple_spheres(1.2*radius, resolution, h_coordinates, "h_atoms.stl")
-#create_and_save_multiple_spheres(1.8*radius, resolution, p_coordinates, "p_atoms.stl")
-#create_and_save_multiple_spheres(1.52*radius, resolution, o_coordinates, "o_atoms.stl")
-##create_and_save_multiple_spheres(1.55*radius, resolution, n_coordinates, "n_atoms.stl")
-#create_and_save_multiple_spheres(1.7*radius, resolution, c_coordinates, "c_atoms.stl")
+pdb_filename = 'ExamplePDB/NAD.pdb'  # Replace with the actual file name
+file_path = os.path.abspath(__file__)
+pdb_absolute_path = os.path.join(os.path.dirname(file_path), pdb_filename)
+
+radius_factor = 0.7
+resolution = 100
+
+make_molecule_stl_VanDerWaals(pdb_absolute_path, resolution, csv_absolute_path, radius_factor)
