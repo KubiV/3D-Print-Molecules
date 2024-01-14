@@ -1,5 +1,7 @@
 import numpy as np
 from stl import mesh
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def create_sphere(radius, resolution):
     phi = np.linspace(0, np.pi, resolution)
@@ -60,21 +62,26 @@ def create_and_save_multiple_spheres(radius, resolution, translation_vectors, ou
     # Save all spheres to a single STL file
     save_to_stl(output_filename, combined_vertices, combined_faces)
 
-def main():
-    # Set the parameters for the spheres
-    radius = 1.0
-    resolution = 100
+    #fig = plt.figure()
+    #ax = fig.add_subplot(111, projection='3d')
 
-    # Define the translation vectors for each sphere
-    translation_vectors = [
-        np.array([1.0, 2.0, 3.0]),
-        np.array([-2.0, 0.0, 1.0]),
-        np.array([0.0, -2.0, 0.0]),
-        np.array([1.0, -2.0, 0.0])
-    ]
+    # Plot the mesh
+    #ax.plot_trisurf(combined_vertices[:, 0], combined_vertices[:, 1], combined_vertices[:, 2], triangles=combined_faces, cmap='viridis')
 
-    # Save all spheres in one STL file
-    create_and_save_multiple_spheres(radius, resolution, translation_vectors, "combined_spheres.stl")
+    # Show the plot
+    #plt.show()
 
-if __name__ == "__main__":
-    main()
+radius = 1.0
+resolution = 10
+
+# Define the translation vectors for each sphere
+translation_vectors = [
+    np.array([1.0, 2.0, 3.0]),
+    np.array([-2.0, 0.0, 1.0]),
+    np.array([0.0, -2.0, 0.0]),
+    np.array([1.0, -2.0, 0.0])
+]
+
+# Save all spheres in one STL file
+#create_and_save_multiple_spheres(radius, resolution, translation_vectors, "combined_spheres.stl")
+

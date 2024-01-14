@@ -1,12 +1,18 @@
 import re
 import numpy as np
 from multisphere import create_and_save_multiple_spheres 
+import csv
 
 # Your regex patterns
 pattern1 = r'^HETATM\s+(\d+)\s+([A-Za-z0-9]+(?:-[A-Za-z0-9]+)?)\s+([A-Za-z0-9]+)\s*([A-Za-z]?)\s*(\d*)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(-?\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s*([A-Za-z]*)\s*$'
 pattern2 = r'^HETATM\s+(\d+)\s+(\S+)\s+(\w+)\s+(\w+)\s+(\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+(\S+)'
+pattern3 = r"\s*([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+([-+]?\d*\.\d+)\s+(\w+)\s*"
 
-patterns = {'pattern1': pattern1, 'pattern2': pattern2}
+patterns = {
+    'pattern1': pattern1, 
+    'pattern2': pattern2,
+    'pattern3': pattern3
+}
 
 # Example strings
 example_string = "HETATM    1  O   UNL     1      -0.668   1.159   0.257  1.00  0.00           O"
@@ -76,17 +82,17 @@ def extract_values(data_lines):
 
 #--------------
 
-def match_coord(match, pattern):
+def match_coord(match, pattern, a, b, c, d):
     if match:
-        atom_type = match.group(2)
-        x_coord = float(match.group(6))
-        y_coord = float(match.group(7))
-        z_coord = float(match.group(8))
+        atom = match.group(a) #2 for patter2, 11 for pattern1
+        atom_type = re.sub(r'\d.*', '', atom)
+        x_coord = float(match.group(b))
+        y_coord = float(match.group(c))
+        z_coord = float(match.group(d))
 
         return atom_type, x_coord, y_coord, z_coord
-    else:
-        print("No match found. Trying the other pattern.")
-        print()
+    #else:
+        #print()
 
 def extract_coord(data_lines):
     # Dictionary to store coordinates for each atom type
@@ -97,14 +103,20 @@ def extract_coord(data_lines):
         pattern_key = 'pattern1'
         pattern = patterns[pattern_key]
         match = re.match(pattern, line)
-        result = match_coord(match, pattern)
+        result = match_coord(match, pattern, 11, 6, 7, 8)
 
         # If the first pattern doesn't match, try the second pattern
         if not match:
             pattern_key = 'pattern2'
             pattern = patterns[pattern_key]
             match = re.match(pattern, line)
-            result = match_coord(match, pattern)
+            result = match_coord(match, pattern, 2, 6, 7, 8)
+
+            if not match:
+                pattern_key = 'pattern3'
+                pattern = patterns[pattern_key]
+                match = re.match(pattern, line)
+                result = match_coord(match, pattern, 4, 1, 2, 3)
 
         # If coordinates are found, save them to the NumPy array
         if result:
@@ -122,26 +134,51 @@ def extract_coord(data_lines):
 
     return atom_coordinates
 
-# Read PDB file and extract lines
+def find_radius(csv_filename, target_value):
+    with open(csv_filename, 'r', newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        next(csvfile)  # Skip the header row if it exists
+        for row in reader:
+            # Check if the value in the 2nd column (index 1) matches the target_value
+            if len(row) > 1 and row[1] == target_value:
+                # If the condition is met, print the value in the 8th column (index 7)
+                if len(row) > 7:
+                    return (float(row[7])/100)  
+    # If no match is found, return None or an appropriate value
+    return None
+
+# Load data from the CSV file
+csv_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/PubChemElements_all.csv'
 pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/NAD.pdb'  # Replace with the actual file name
-with open(pdb_filename, 'r') as pdb_file:
-    pdb_lines = pdb_file.readlines()
+radius_factor = 0.7
+resolution = 100
 
-coordinates = extract_coord(pdb_lines)
-print(coordinates)
+def make_molecule_stl(pdb_filename, resolution, radius_factor):
+    # Read PDB file and extract lines
+    with open(pdb_filename, 'r') as pdb_file:
+        pdb_lines = pdb_file.readlines()
 
+    coordinates_dict = extract_coord(pdb_lines)
+
+    for key, coordinates in coordinates_dict.items():
+        coordinates = coordinates_dict.get(key, [])
+        radius = find_radius(csv_filename, key)
+        create_and_save_multiple_spheres(radius * radius_factor, resolution, coordinates, f"{key}_atoms.stl")
+
+make_molecule_stl(pdb_filename, resolution, radius_factor)
 # Accessing coordinates for specific atom types
 #h_coordinates = coordinates.get('H', [])
 #o_coordinates = coordinates.get('O', [])
 #c_coordinates = coordinates.get('C', [])
+#p_coordinates = coordinates.get('P', [])
+#n_coordinates = coordinates.get('N', [])
 
 #print('Hydrogen:', h_coordinates)
 #print('Oxygen:', o_coordinates)
 #print('Carbon:', c_coordinates)
 
-radius = 0.7
-resolution = 100
-
 #create_and_save_multiple_spheres(1.2*radius, resolution, h_coordinates, "h_atoms.stl")
+#create_and_save_multiple_spheres(1.8*radius, resolution, p_coordinates, "p_atoms.stl")
 #create_and_save_multiple_spheres(1.52*radius, resolution, o_coordinates, "o_atoms.stl")
+##create_and_save_multiple_spheres(1.55*radius, resolution, n_coordinates, "n_atoms.stl")
 #create_and_save_multiple_spheres(1.7*radius, resolution, c_coordinates, "c_atoms.stl")
