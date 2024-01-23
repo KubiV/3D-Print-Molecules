@@ -1,0 +1,23 @@
+CO2
+  -OEChem-01122415293D
+
+  3  2  0     0  0  0  0  0  0999 V2000
+   66.0550  104.7780   70.0090 C   0  0  0  0  0  0  0  0  0  0  0  0
+   65.7670  105.9790   70.1550 O   0  0  0  0  0  0  0  0  0  0  0  0
+   67.0870  104.2920   70.5260 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  1  3  2  0  0  0  0
+M  END
+> <OPENEYE_ISO_SMILES>
+C(=O)=O
+
+> <OPENEYE_INCHI>
+InChI=1S/CO2/c2-1-3
+
+> <OPENEYE_INCHIKEY>
+CURLTUGMZLYLDI-UHFFFAOYSA-N
+
+> <FORMULA>
+CO2
+
+$$$$
