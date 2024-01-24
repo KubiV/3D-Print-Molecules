@@ -202,11 +202,11 @@ class ChemicalInfoApp(QWidget):
         else:
             self.show_error("Error", "Chyba")
 
-        pubchem_coordinates_url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/"+str(cid)+"/record/SDF?record_type=3d&response_type=display"
+        pubchem_coordinates_url_3d = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/{cid}/record/SDF?record_type=3d&response_type=display"
 
         # Send an HTTP GET request to the URL
-        response_coordinates = requests.get(pubchem_coordinates_url)
-            
+        response_coordinates = requests.get(pubchem_coordinates_url_3d)
+        
         # Check if the request was successful (status code 200)
         if response_coordinates.status_code == 200:
             # Create a temporary file to store the SDF data
@@ -215,7 +215,28 @@ class ChemicalInfoApp(QWidget):
                 temp_sdf_file.write(response_coordinates.content)
                 self.temp_pdb_path = os.path.join(tempfile.gettempdir(), temp_sdf_filename)
                 print(self.temp_pdb_path)
-        
+        elif response_coordinates.status_code == 404:
+            # Second URL (2D coordinates)
+            pubchem_coordinates_url_2d = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/{cid}/record/SDF?record_type=2d&response_type=display"
+
+            # Try fetching from the second URL
+            response_coordinates = requests.get(pubchem_coordinates_url_2d)
+
+            # Check if this request was successful
+            if response_coordinates.status_code == 200:
+                # Create a temporary file to store the SDF data
+                with tempfile.NamedTemporaryFile(suffix=".sdf", delete=False) as temp_sdf_file:
+                    temp_sdf_filename = temp_sdf_file.name
+                    temp_sdf_file.write(response_coordinates.content)
+                    self.temp_pdb_path = os.path.join(tempfile.gettempdir(), temp_sdf_filename)
+                    print(self.temp_pdb_path)
+            else:
+                # Handle other errors or no data found
+                print(f"Failed to retrieve data: Status code {response_coordinates.status_code}")
+        else:
+            # Handle other errors for the first URL
+            print(f"Failed to retrieve data: Status code {response_coordinates.status_code}")
+            
         self.filename = cid
 
     def fetch_pdb_data(self):
