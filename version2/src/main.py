@@ -15,8 +15,9 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 home_directory = Path.home()
+current_directory = os.path.dirname(__file__)
 
-class ChemicalInfoApp(QWidget):
+class MultiColouredMoleculesSTLGenerator(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -35,7 +36,7 @@ class ChemicalInfoApp(QWidget):
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_label = QLabel("Quality: 50")
         self.generate_model_button = QPushButton("Generate Model")
-        self.default_image_path = "/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/graphical/icon_v1.jpg"  # Replace with the actual path to your default image
+        self.default_image_path = os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1.jpg"))  # Replace with the actual path to your default image
 
         self.init_ui()
 
@@ -157,7 +158,7 @@ class ChemicalInfoApp(QWidget):
         self.model_template = file_path
         print(self.model_template)
 
-        self.set_image("/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/graphical/icon_v1.jpg")
+        self.set_image(os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1_file.jpg")))
         self.table.setItem(0, 1, QTableWidgetItem(file_path))
         self.table.setItem(1, 1, QTableWidgetItem("Imported file"))
         self.table.setItem(2, 1, QTableWidgetItem(" "))
@@ -378,5 +379,5 @@ class ChemicalInfoApp(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    chem_info_app = ChemicalInfoApp()
+    chem_info_app = MultiColouredMoleculesSTLGenerator()
     sys.exit(app.exec_())
