@@ -1,2 +1,0 @@
-('/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/build/main/PYZ-00.pyz',
- [])

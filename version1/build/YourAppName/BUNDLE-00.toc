@@ -1,3 +1,0 @@
-([('YourAppName',
-   '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/dist/YourAppName',
-   'EXECUTABLE')],)
