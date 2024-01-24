@@ -1,0 +1,6 @@
+requests
+numpy
+biopython
+numpy-stl
+matplotlib
+pyqt5

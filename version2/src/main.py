@@ -1,3 +1,4 @@
+# pip install -r requirements.txt
 import sys
 import requests
 from io import BytesIO
