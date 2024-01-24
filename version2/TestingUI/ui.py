@@ -25,7 +25,7 @@ class ChemicalInfoApp(QWidget):
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_label = QLabel("Quality: 50")
         self.generate_model_button = QPushButton("Generate Model")
-        self.default_image_path = "path/to/default_image.png"  # Replace with the actual path to your default image
+        self.default_image_path = "/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/graphical/icon_v1.jpg"  # Replace with the actual path to your default image
 
         self.init_ui()
 

@@ -1,12 +1,12 @@
 import re
 import numpy as np
-from ModelGenerating import create_and_save_multiple_spheres 
 import csv
 import os
 import zipfile
 import shutil
-import time
 import tempfile
+from ModelGenerating import create_and_save_multiple_spheres
+from PDBfileParse import extract_coordinates2 
 
 #--- Example data ---#
 
@@ -107,6 +107,12 @@ def extract_coord(data_lines):
     # Dictionary to store coordinates for each atom type
     atom_coordinates = {}
 
+    # Check if the file_path is indeed a path to an existing file
+    if os.path.isfile(data_lines):
+        # If it is, open the file and read its contents
+        with open(data_lines, 'r') as data_lines:
+            data_lines = data_lines.readlines()
+
     for line in data_lines:
         # Try the first pattern
         pattern_key = 'pattern1'
@@ -164,22 +170,39 @@ def get_folder_size(folder_path):
             total_size += os.path.getsize(file_path)
     return total_size
 
-def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor):
-    # Read PDB file and extract lines
-    with open(pdb_filename, 'r') as pdb_file:
-        pdb_lines = pdb_file.readlines()
+def choose_function(function1, function2, *args, **kwargs):
+    # Call the first function
+    output1 = function1(*args, **kwargs)
 
-    coordinates_dict = extract_coord(pdb_lines)
+    # Count 'C' in the output
+    c_count = len(output1.get('C', []))
+    print("C in atom: "+ str(c_count))
+    # Check if there are less than 2 'C'
+    if c_count < 2:
+        output2 = function2(*args, **kwargs)
+        return output2
+    else:
+        return output1
+
+def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor):
+
+    coordinates_dict = choose_function(extract_coordinates2, extract_coord, pdb_filename)
 
     for key, coordinates in coordinates_dict.items():
         coordinates = coordinates_dict.get(key, [])
         radius = find_radius(csv_filename, key)
-        create_and_save_multiple_spheres(radius * radius_factor, resolution, coordinates, f"{key}_atoms.stl")
+        if radius is None:
+            continue
+        radius_final = radius * radius_factor
+        create_and_save_multiple_spheres(radius_final, resolution, coordinates, f"{key}_atoms.stl")
 
    
-def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor):
-    base_pdb_filename, _ = os.path.splitext(os.path.basename(pdb_filename))
-    zip_filename = f"Molecule_{base_pdb_filename}.zip"
+def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor, filename):
+    #base_pdb_filename, _ = os.path.splitext(os.path.basename(pdb_filename))
+    #zip_filename = f"Molecule_{base_pdb_filename}.zip"
+    zip_filename = "Molecule_"+str(filename)+".zip"
+
+    print("model for: "+pdb_filename)
 
     original_directory = os.getcwd()
     try:
@@ -200,7 +223,6 @@ def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor):
             print("Can not create ball and stick model")
 
         while True:
-            time.sleep(0.0001)
 
             current_size = get_folder_size(temp_directory)
 
@@ -237,7 +259,7 @@ def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor):
 #--- Example test usage ---#
 
 # Set output path
-output_directory = "/Users/jakubvavra/Downloads"
+output_directory = "/Users/jakubvavra/Desktop"
 os.chdir(output_directory)
 
 # Load data from the CSV file
@@ -246,13 +268,15 @@ csv_path = os.path.abspath(__file__)
 csv_absolute_path = os.path.join(os.path.dirname(csv_path), csv_filename)
 
 # Load data from the PDB file
-pdb_filename = 'ExamplePDB/NAD.pdb'  # Replace with the actual file name
+#pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/ExamplePDB/atp.pdb'  # Replace with the actual file name
+pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/ExamplePDB/4WB5.pdb' 
 file_path = os.path.abspath(__file__)
 pdb_absolute_path = os.path.join(os.path.dirname(file_path), pdb_filename)
 
 # Atom model settings
 radius_factor = 0.7
-resolution = 100
+resolution = 10
+filename = ""
 
 #make_molecule_stl_VanDerWaals(pdb_absolute_path, resolution, csv_absolute_path, radius_factor)
-ZIPmolecule("VDW", pdb_absolute_path, resolution, csv_absolute_path, radius_factor)
+#ZIPmolecule("VDW", pdb_absolute_path, resolution, csv_absolute_path, radius_factor, filename)

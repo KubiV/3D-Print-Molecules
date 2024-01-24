@@ -1,6 +1,5 @@
 from Bio import PDB
 import numpy as np
-from multisphere import create_and_save_multiple_spheres 
 
 def extract_coordinates(pdb_filename):
     # Create a PDB parser
@@ -56,10 +55,11 @@ def extract_coordinates2(pdb_filename):
 
 
 # Example usage
-pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/example pdb/NAD.pdb'
-coordinates = extract_coordinates2(pdb_filename)
+#pdb_filename = '/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/ExamplePDB/4WB5.pdb'
+pdb_filename = "/Users/jakubvavra/Documents/GitHub/3D-Print-Molecules/version2/ExamplePDB/atp.pdb"
+#coordinates = extract_coordinates2(pdb_filename)
 
-print(coordinates)
+#print(coordinates)
 
 #for key in coordinates:
 #    print(key)
@@ -69,20 +69,20 @@ print(coordinates)
 #    specific_atom_coordinates[f'{key}_coordinates'] = coordinates.get(key, [])
 
 # Accessing coordinates for specific atom types
-h_coordinates = coordinates.get('H', [])
-o_coordinates = coordinates.get('O', [])
-c_coordinates = coordinates.get('C', [])
-p_coordinates = coordinates.get('P', [])
-n_coordinates = coordinates.get('N', [])
+#h_coordinates = coordinates.get('H', [])
+#o_coordinates = coordinates.get('O', [])
+#c_coordinates = coordinates.get('C', [])
+#p_coordinates = coordinates.get('P', [])
+#n_coordinates = coordinates.get('N', [])
 
 #print(coordinates)
 
-print('Hydrogen:', h_coordinates)
-print('Oxygen:', o_coordinates)
-print('Carbon:', c_coordinates)
+#print('Hydrogen:', h_coordinates)
+#print('Oxygen:', o_coordinates)
+#print('Carbon:', c_coordinates)
 
-radius = 0.7
-resolution = 100
+#radius = 0.7
+#resolution = 100
 
 #create_and_save_multiple_spheres(1.2*radius, resolution, h_coordinates, "h_atoms.stl")
 #create_and_save_multiple_spheres(1.8*radius, resolution, p_coordinates, "p_atoms.stl")
