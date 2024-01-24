@@ -7,6 +7,7 @@ import shutil
 import tempfile
 from ModelGenerating import create_and_save_multiple_spheres
 from PDBfileParse import extract_coordinates2 
+import PeriodicTable
 
 #--- Example data ---#
 
@@ -149,7 +150,7 @@ def extract_coord(data_lines):
 
     return atom_coordinates
 
-def find_radius(csv_filename, target_value):
+def find_radius_csv(csv_filename, target_value):
     with open(csv_filename, 'r', newline='') as csvfile:
         reader = csv.reader(csvfile)
         next(csvfile)  # Skip the header row if it exists
@@ -161,6 +162,16 @@ def find_radius(csv_filename, target_value):
                     return (float(row[7])/100)  
     # If no match is found, return None or an appropriate value
     return None
+                     
+def find_radius_pymodule(data, target_value):
+    for element in data:
+        # Check if the value in the 'Symbol' key matches the target_value
+        if element.get('Symbol') == target_value:
+            # If the condition is met, return the value in the 'AtomicRadius' key divided by 100
+            return float(element.get('AtomicRadius', 0)) / 100
+    # If no match is found, return None or an appropriate value
+    return None
+    # Example usage: print(find_radius_pymodule(PeriodicTable.PeriodicTableData, "H"))
 
 def get_folder_size(folder_path):
     total_size = 0
@@ -201,7 +212,7 @@ def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius
     # Generate for all atoms their 3D model
     for key, coordinates in coordinates_dict.items():
         coordinates = coordinates_dict.get(key, [])
-        radius = find_radius(csv_filename, key)
+        radius = find_radius_pymodule(PeriodicTable.PeriodicTableData, key)
         if radius is None:
             continue
         radius_final = radius * radius_factor
