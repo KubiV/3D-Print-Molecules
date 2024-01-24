@@ -170,12 +170,16 @@ def get_folder_size(folder_path):
             total_size += os.path.getsize(file_path)
     return total_size
 
+def count_carbons(input):
+    c_count = len(input.get('C', []))
+    return c_count
+
 def choose_function(function1, function2, *args, **kwargs):
     # Call the first function
     output1 = function1(*args, **kwargs)
 
     # Count 'C' in the output
-    c_count = len(output1.get('C', []))
+    c_count = count_carbons(output1)
     print("C in atom: "+ str(c_count))
     # Check if there are less than 2 'C'
     if c_count < 2:
@@ -188,6 +192,13 @@ def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius
 
     coordinates_dict = choose_function(extract_coordinates2, extract_coord, pdb_filename)
 
+    # Long C chain -> big file protection
+    c_count = count_carbons(coordinates_dict)
+    if c_count > 100:
+        print("Large file protection ACTIVATED")
+        resolution = 8
+
+    # Generate for all atoms their 3D model
     for key, coordinates in coordinates_dict.items():
         coordinates = coordinates_dict.get(key, [])
         radius = find_radius(csv_filename, key)
