@@ -1,36 +1,25 @@
-# 3D Print Molecules
- Python script which makes easier to 3D print moleculs in muliticolour by automatical separate export of atoms of each kind. 
+# 3D Print Molecules in Colour
+ Python based program which makes easier to 3D print moleculs in muliticolour by automatical separation and export of atoms of each kind. 
  
-![Molecule for 3D printing in PrusaSlicer (left) and in PyMOL (right)](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/Img1.png)
+![Program output and PYMOL output comparison](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/Img4.png)
 
 ## Usage
+![GUI Description](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/version2_ui1_description.jpg)
 
- 1. Main script works in the directory, which is set in the terminal (first of all don't forget to execute `cd Folder/desired_folder` ).
+ 1. Eneter molecule name, CID number or PDB code into the text filed or select your own PDB or SDF file with atom coordinates.
+ 2. Fetch data using Enter key or apropriate button.
+ 3. Check folder for savin the output file.
+ 4. Choose molecule 3D representation for export (now only VDW - Van der Waals model - spheres).
+ 5. Check molecule information in the table.
+ 6. Set quality of the model (be aware of large file protection - program automatically sets low quality for molecules with high number of carbons).
+ 7. Generate the model!
 
-[`MultiMaterial_STL_Molecules.py`](https://github.com/KubiV/3D-Print-Molecules/blob/main/MultiMaterial_STL_Molecules.py)
-
-  2. Install Incentive [PyMOL](https://pymol.org/2/) program and [Open Babel](http://openbabel.org/wiki/Main_Page)
-
-  3. Set the permissions and make sure that in the script the path to the executable file is correct (depends on the operating system).
-
-    app_to_open_with = "executable_file"
-
-**macOS**
-
-    /Applications/PyMOL.app/Contents/MacOS/PyMOL
-
-**Windows**
-to be specified
-
-**Ubuntu**
-to be specified
-
- 4. Execute the script and enter the [PubChem](https://pubchem.ncbi.nlm.nih.gov) CID number (Compound ID number) for the molecule. The .stl files are generated for C, O, H, N atoms separately and one for the molecule as a whole.
+![Example usage](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/AppUsage.gif)
 
  5. Import to [PrusaSlicer](https://www.prusa3d.com/page/prusaslicer_424/) all STL files at once! And confirm "Multi part object" -> YES.
    ![Molecule for 3D printing in PrusaSlicer (left) and in PyMOL (right)](https://github.com/KubiV/3D-Print-Molecules/blob/main/Photos/Img2.png)
 
- 6. The script only exports models of C, O, H, N so there is chance that your molecule contain extra atoms or does not contain exported atoms - so keep in mind empty stl files or not exported atoms in these cases.
+ 6. The script only exports models for all present atoms separatelly and storers them into a ZIP file
  
  7.  Scale the molecules, set the colours for multicolour printing and slice the model.
 
@@ -41,20 +30,11 @@ to be specified
  - export selection butttons (modify what exactly do you want to export, quality settings ...)
  - custom relative size of bond or atom
  - add a settings tab (manualy edit paths for PyMOL and Open Babel)
- - ✅one app using pyinstaller
- - ✅ direct import of .pdb
- - ✅ auto quit PyMOL
- - ✅ GUI or more intuitive text UI
- - ✅ Integrated CID/PDB database view and number search via PubChem PUG REST and RCSB PDB Data API
- - ✅ Optimize intermediate files saving (tempfile or io.BytesIO module)
- - ✅ Auto-install dependencies (python modules, openBabel, PyMOL, slicer) or wizzard
 
 ## Common problems
 
  - Not installed Python - see links
- - Not installed Pillow module - run `pip3 install Pillow` in python
- - Not installed Incentive PyMOL (NOT the opensource version, the Incentive isneeded) - see links
- - Not installed Open Babel - see links
+ - Default output folder selected incorrectly
 
 ## Pyinstaller
 
@@ -65,10 +45,6 @@ to be specified
 ## Links
 
  - Python for Windows - https://apps.microsoft.com/detail/python-3-12/9NCVDN91XZQP
- - Incentive PyMOL - https://pymol.org/2/
- - Open Babel - http://openbabel.org/wiki/Main_Page
- - Open Babel for Windows - https://github.com/openbabel/openbabel/releases
- - Open Babel for macOS - https://formulae.brew.sh/formula/open-babel
  - PrusaSlicer - https://www.prusa3d.com/page/prusaslicer_424/
 
  - PubChem - https://pubchem.ncbi.nlm.nih.gov
