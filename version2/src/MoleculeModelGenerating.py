@@ -5,9 +5,24 @@ import os
 import zipfile
 import shutil
 import tempfile
+import json
 from ModelGenerating import create_and_save_multiple_spheres
 from PDBfileParse import extract_coordinates2 
 import PeriodicTable
+
+def load_setting(key):
+    """Load a specific setting by key from a JSON file."""
+    settings_file_path = os.path.join(os.path.dirname(__file__), 'Settings.json')
+    try:
+        with open(settings_file_path, 'r') as file:
+            settings = json.load(file)
+        return settings.get(key)
+    except FileNotFoundError:
+        print("Settings file not found.")
+        return None
+    except json.JSONDecodeError:
+        print("Error decoding JSON from the settings file.")
+        return None
 
 #--- Example data ---#
 
@@ -205,9 +220,11 @@ def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius
 
     # Long C chain -> big file protection
     c_count = count_carbons(coordinates_dict)
-    if c_count > 100:
+    if c_count > load_setting('large_c_chain_protection'):
         print("Large file protection ACTIVATED")
-        resolution = 8
+        if resolution > load_setting('resolution_limit'):
+            resolution = load_setting('resolution_limit')
+        print("Resolution: "+str(resolution))
 
     # Generate for all atoms their 3D model
     #for key, coordinates in coordinates_dict.items():

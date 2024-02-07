@@ -1,6 +1,6 @@
 #Testing Python script
 from PDBfileParse import extract_coordinates2
-from MoleculeModelGenerating import extract_coord
+from version2.src.MoleculeModelGenerating import extract_coord
 
 def choose_function(function1, function2, *args, **kwargs):
     # Call the first function
