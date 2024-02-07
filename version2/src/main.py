@@ -9,7 +9,7 @@ import tempfile
 from MoleculeModelGenerating import ZIPmolecule
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout,
-    QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QGridLayout, QMessageBox
+    QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QGridLayout, QMessageBox, QCheckBox
 )
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
@@ -28,15 +28,17 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.choice_menu = QComboBox()
         self.table = QTableWidget(3, 2)
         self.image_label = QLabel()
-        self.image_label.setFixedSize(200, 200)  # Set the fixed size for the image label
+        self.image_label.setFixedSize(200, 200)
         self.file_path = ""
         self.VDW = None
         self.BS = None
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_label = QLabel("Quality: 50")
+        self.generate_hydrogens_checkbox = QCheckBox("Generate Hydrogens")
+        self.generate_hydrogens_checkbox.stateChanged.connect(self.update_generate_hydrogens)
         self.generate_model_button = QPushButton("Generate Model")
         self.default_image_path = os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1.jpg"))  # Replace with the actual path to your default image
-
+        
         self.init_ui()
 
     def init_ui(self):
@@ -91,6 +93,9 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         quality_layout.addWidget(self.quality_label)
         quality_layout.addWidget(self.quality_slider)
         center_layout.addLayout(quality_layout)
+
+        # Add the checkbox to the center layout
+        center_layout.addWidget(self.generate_hydrogens_checkbox)
 
         # Button to generate model
         center_layout.addWidget(self.generate_model_button)
@@ -346,6 +351,10 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
     def update_quality(self, value):
         self.quality_label.setText(f"Quality: {value}")
+
+    def update_generate_hydrogens(self, state):
+        if state == Qt.Checked:
+
 
     def generate_model(self):
         # Placeholder for generate model logic
