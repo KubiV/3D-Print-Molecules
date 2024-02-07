@@ -38,7 +38,8 @@
 
 ## Pyinstaller
 
-`pyinstaller --onefile --windowed --name "3D print Multi-color Molecules" --icon=../../graphical/default_icon.icns --debug=all ../src/main.py`
+macOS `pyinstaller --onefile --add-data "Settings.json:." --windowed --name "3D print Multi-color Molecules" --icon=../../graphical/default_icon.icns --debug=all ../src/main.py
+`
 
 `pyinstaller -y --clean -F -w -i graphical/default_icon.icns --debug=all src/main.py`
 
