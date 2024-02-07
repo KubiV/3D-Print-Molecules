@@ -199,7 +199,7 @@ def choose_function(function1, function2, *args, **kwargs):
     else:
         return output1
 
-def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor):
+def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor, hydrogens):
 
     coordinates_dict = choose_function(extract_coordinates2, extract_coord, pdb_filename)
 
@@ -210,16 +210,25 @@ def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius
         resolution = 8
 
     # Generate for all atoms their 3D model
+    #for key, coordinates in coordinates_dict.items():
+    #    coordinates = coordinates_dict.get(key, [])
+    #    radius = find_radius_pymodule(PeriodicTable.PeriodicTableData, key)
+    #    if radius is None:
+    #        continue
+    #    radius_final = radius * radius_factor
+    #    create_and_save_multiple_spheres(radius_final, resolution, coordinates, f"{key}_atoms.stl")
     for key, coordinates in coordinates_dict.items():
+        # Skip hydrogen atoms if hydrogens is False
+        if not hydrogens and key == "H":
+            continue
         coordinates = coordinates_dict.get(key, [])
         radius = find_radius_pymodule(PeriodicTable.PeriodicTableData, key)
         if radius is None:
             continue
         radius_final = radius * radius_factor
         create_and_save_multiple_spheres(radius_final, resolution, coordinates, f"{key}_atoms.stl")
-
    
-def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor, filename):
+def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor, filename, hydrogens):
     #base_pdb_filename, _ = os.path.splitext(os.path.basename(pdb_filename))
     #zip_filename = f"Molecule_{base_pdb_filename}.zip"
     zip_filename = "Molecule_"+str(filename)+".zip"
@@ -239,7 +248,7 @@ def ZIPmolecule(model ,pdb_filename, resolution, csv_filename, radius_factor, fi
 
         # Perform your function here
         if model == "VDW":
-            make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor)
+            make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius_factor, hydrogens)
         elif model =="BS":
             generate_model = False
             print("Can not create ball and stick model")

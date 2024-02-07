@@ -36,6 +36,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.quality_label = QLabel("Quality: 50")
         self.generate_hydrogens_checkbox = QCheckBox("Generate Hydrogens")
         self.generate_hydrogens_checkbox.stateChanged.connect(self.update_generate_hydrogens)
+        self.generate_hydrogens_checkbox.setCheckState(Qt.Checked)
         self.generate_model_button = QPushButton("Generate Model")
         self.default_image_path = os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1.jpg"))  # Replace with the actual path to your default image
         
@@ -94,9 +95,9 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         quality_layout.addWidget(self.quality_slider)
         center_layout.addLayout(quality_layout)
 
-        # Add the checkbox to the center layout
+        # Add the checkbox
         center_layout.addWidget(self.generate_hydrogens_checkbox)
-
+       
         # Button to generate model
         center_layout.addWidget(self.generate_model_button)
         self.generate_model_button.clicked.connect(self.generate_model)
@@ -354,7 +355,10 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
     def update_generate_hydrogens(self, state):
         if state == Qt.Checked:
-
+            self.hydrogens = True
+        else:
+            self.hydrogens = False
+        print("Hydrogens: "+str(self.hydrogens))
 
     def generate_model(self):
         # Placeholder for generate model logic
@@ -385,7 +389,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         print("Model: "+str(model)+", Resolution: "+str(resolution))
 
         #make_molecule_stl_VanDerWaals(pdb_absolute_path, resolution, csv_absolute_path, radius_factor)
-        ZIPmolecule(model, pdb_absolute_path, resolution, csv_absolute_path, radius_factor, filename)
+        ZIPmolecule(model, pdb_absolute_path, resolution, csv_absolute_path, radius_factor, filename, self.hydrogens)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
