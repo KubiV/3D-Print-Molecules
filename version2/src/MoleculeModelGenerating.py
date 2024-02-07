@@ -9,20 +9,39 @@ import json
 from ModelGenerating import create_and_save_multiple_spheres
 from PDBfileParse import extract_coordinates2 
 import PeriodicTable
+import os
+import json
 
 def load_setting(key):
     """Load a specific setting by key from a JSON file."""
+    # Construct the path to the settings file relative to this script.
     settings_file_path = os.path.join(os.path.dirname(__file__), 'Settings.json')
     try:
         with open(settings_file_path, 'r') as file:
             settings = json.load(file)
-        return settings.get(key)
+        # Use 'if key in settings' to explicitly check if the key exists.
+        if key in settings:
+            return settings[key]
+        else:
+            return "KeyNotFound"
     except FileNotFoundError:
-        print("Settings file not found.")
-        return None
+        return "FileNotFound"
     except json.JSONDecodeError:
-        print("Error decoding JSON from the settings file.")
-        return None
+        return "DecodeError"
+
+def verify_value_json(variable_name, default_value):
+    setting = load_setting(str(variable_name))
+    # Handle the setting based on its value or error identifier.
+    if setting in ["FileNotFound", "DecodeError", "KeyNotFound"]:
+        return int(default_value)
+    else:
+        try:
+            # Ensure the setting is converted to int safely.
+            return int(setting)
+        except ValueError:
+            # Handle case where the value cannot be converted to an integer.
+            print(f"Value for {variable_name} in JSON is not a valid integer.")
+            return int(default_value)
 
 #--- Example data ---#
 
@@ -218,13 +237,18 @@ def make_molecule_stl_VanDerWaals(pdb_filename, resolution, csv_filename, radius
 
     coordinates_dict = choose_function(extract_coordinates2, extract_coord, pdb_filename)
 
+    # Load again the variables
+    large_c_chain_protection = verify_value_json("large_c_chain_protection", 100)
+    resolution_limit = verify_value_json("resolution_limit", 8)
+
     # Long C chain -> big file protection
     c_count = count_carbons(coordinates_dict)
-    if c_count > load_setting('large_c_chain_protection'):
+    if c_count > large_c_chain_protection:
         print("Large file protection ACTIVATED")
-        if resolution > load_setting('resolution_limit'):
-            resolution = load_setting('resolution_limit')
+        if resolution > resolution_limit:
+            resolution = resolution_limit
         print("Resolution: "+str(resolution))
+        print("C chain limit: "+str(large_c_chain_protection))
 
     # Generate for all atoms their 3D model
     #for key, coordinates in coordinates_dict.items():
