@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
-home_directory = Path.home()
 current_directory = os.path.dirname(__file__)
 
 class MultiColouredMoleculesSTLGenerator(QWidget):
@@ -23,7 +22,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
         self.systematic_name_entry = QLineEdit()
         self.file_button = QPushButton("Choose File")
-        self.directory_path = os.path.join(home_directory, 'Desktop')
+        self.directory_path = Path.home() / "Desktop"
         self.directory_label = QLabel(str(self.directory_path))
         self.directory_button = QPushButton("Choose Directory")
         self.choice_menu = QComboBox()
@@ -113,7 +112,8 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)
 
     def determine_input_type(self, input_str):
-        if input_str.isdigit() or input_str.isalpha():
+        cas_pattern = re.compile(r"^\d{2,7}-\d{2}-\d$")
+        if input_str.isdigit() or input_str.isalpha() or cas_pattern.match(input_str):
             return "CID"
         elif re.match(r'^[a-zA-Z0-9]{4}$', input_str):
             return "PDB"
@@ -167,6 +167,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.filename = file_path_for_filename.stem
 
     def fetch_pubchem_data(self):
+        cid = None
         systematic_name = self.systematic_name_entry.text()
         all_digits = all(char.isdigit() for char in systematic_name)
 
@@ -176,10 +177,10 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
             if response.status_code == 200:
                 data = response.json()
-                cid = data['IdentifierList']['CID'][0]
-                self.model_template = cid
-                print(self.model_template)
-
+                cid = data.get('IdentifierList', {}).get('CID', [])[0]
+                if cid is None:
+                    self.show_error("Error", "CID not found for the given name.")
+                    return
         else:
             cid = systematic_name
 
