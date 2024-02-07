@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Formulář pro systematický název molekuly</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submit").click(function () {
+                var systematicName = $("#systematicName").val();
+                $.ajax({
+                    url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + systematicName + "/cids/JSON",
+                    dataType: "json",
+                    success: function (data) {
+                        var cid = data["IdentifierList"]["CID"][0];
+                        $.ajax({
+                            url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + cid + "/property/IUPACName,CanonicalSMILES/JSON",
+                            dataType: "json",
+                            success: function (data) {
+                                var iupacName = data["PropertyTable"]["Properties"][0]["IUPACName"];
+                                var trivialName = data["PropertyTable"]["Properties"][0]["CanonicalSMILES"];
+                                $("#result").html("<table><tr><th>Systematický název molekuly</th><th>Triviální název molekuly</th><th>CID</th><th>Náhled modelu molekuly</th></tr><tr><td>" + systematicName + "</td><td>" + trivialName + "</td><td>" + cid + "</td><td><img src='https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid=" + cid + "&width=300&height=300'></td></tr></table>");
+                            }
+                        });
+                    },
+                    error: function () {
+                        alert("Nepodařilo se získat CID pro zadaný systematický název molekuly.");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>Formulář pro systematický název molekuly</h1>
+<form>
+    <label for="systematicName">Systematický název molekuly:</label>
+    <input type="text" id="systematicName" name="systematicName"><br><br>
+    <input type="button" id="submit" value="Odeslat">
+</form>
+<div id="result"></div>
+</body>
+</html>
