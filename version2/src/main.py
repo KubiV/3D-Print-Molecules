@@ -6,16 +6,80 @@ import re
 import os
 from pathlib import Path
 import tempfile
+import json
 from MoleculeModelGenerating import ZIPmolecule
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout,
-    QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QGridLayout, QMessageBox
-)
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QMessageBox, QCheckBox, QDialog, QScrollBar
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
-home_directory = Path.home()
 current_directory = os.path.dirname(__file__)
+
+class SettingsWindow(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Settings")
+        
+        # Assume the settings file is named settings.json and located at a specific path
+        self.settings_file_path = os.path.join(os.path.dirname(__file__), 'Settings.json')
+        
+        # Load settings
+        self.settings = self.load_settings()
+
+        layout = QVBoxLayout()
+
+        # Setting for large_c_chain_protection
+        setting_layout = QHBoxLayout()
+        self.label_large_c_chain = QLabel("Large C chain:")
+        self.text_field_large_c_chain = QLineEdit(str(self.settings.get('large_c_chain_protection', '')))
+        setting_layout.addWidget(self.label_large_c_chain)
+        setting_layout.addStretch()
+        setting_layout.addWidget(self.text_field_large_c_chain)
+        layout.addLayout(setting_layout)
+
+        # Setting for resolution_limit
+        setting_layout = QHBoxLayout()
+        self.label_resolution_limit = QLabel("Resolution limit when large C:")
+        self.text_field_resolution_limit = QLineEdit(str(self.settings.get('resolution_limit', '')))
+        setting_layout.addWidget(self.label_resolution_limit)
+        setting_layout.addStretch()
+        setting_layout.addWidget(self.text_field_resolution_limit)
+        layout.addLayout(setting_layout)
+
+        # Change button
+        self.change_button = QPushButton("Change Value")
+        self.change_button.clicked.connect(self.change_variable)
+        layout.addWidget(self.change_button)
+
+        self.setLayout(layout)
+
+    def load_settings(self):
+        """Load settings from a JSON file."""
+        try:
+            with open(self.settings_file_path, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}  # Return an empty dict if the file does not exist
+
+    def change_variable(self):
+        """Save the changed values back to the JSON file."""
+        # Validate and update settings
+        try:
+            self.settings['large_c_chain_protection'] = int(self.text_field_large_c_chain.text())
+            self.settings['resolution_limit'] = int(self.text_field_resolution_limit.text())
+        except ValueError:
+            # Handle invalid input; show an error message if necessary
+            return
+
+        # Write updated settings back to the JSON file
+        with open(self.settings_file_path, 'w') as file:
+            json.dump(self.settings, file, indent=4)
+
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_W and event.modifiers() & Qt.ControlModifier:
+            self.close()
+        else:
+            super().keyPressEvent(event)
 
 class MultiColouredMoleculesSTLGenerator(QWidget):
     def __init__(self):
@@ -23,21 +87,24 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
         self.systematic_name_entry = QLineEdit()
         self.file_button = QPushButton("Choose File")
-        self.directory_path = os.path.join(home_directory, 'Desktop')
+        self.directory_path = Path.home() / "Desktop"
         self.directory_label = QLabel(str(self.directory_path))
         self.directory_button = QPushButton("Choose Directory")
         self.choice_menu = QComboBox()
         self.table = QTableWidget(3, 2)
         self.image_label = QLabel()
-        self.image_label.setFixedSize(200, 200)  # Set the fixed size for the image label
+        self.image_label.setFixedSize(200, 200)
         self.file_path = ""
         self.VDW = None
         self.BS = None
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_label = QLabel("Quality: 50")
+        self.generate_hydrogens_checkbox = QCheckBox("Generate Hydrogens")
+        self.generate_hydrogens_checkbox.stateChanged.connect(self.update_generate_hydrogens)
+        self.generate_hydrogens_checkbox.setCheckState(Qt.Checked)
         self.generate_model_button = QPushButton("Generate Model")
         self.default_image_path = os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1.jpg"))  # Replace with the actual path to your default image
-
+        
         self.init_ui()
 
     def init_ui(self):
@@ -93,6 +160,18 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         quality_layout.addWidget(self.quality_slider)
         center_layout.addLayout(quality_layout)
 
+        # Add the checkbox
+        hydrogens_layout = QHBoxLayout()
+        hydrogens_layout.addWidget(self.generate_hydrogens_checkbox)
+            
+       # Add settings button
+        settings_button = QPushButton("Settings")
+        settings_button.setFixedSize(100, 30)  # Adjust the width and height as needed
+        settings_button.clicked.connect(self.open_settings)
+        hydrogens_layout.addWidget(settings_button)
+
+        center_layout.addLayout(hydrogens_layout)
+
         # Button to generate model
         center_layout.addWidget(self.generate_model_button)
         self.generate_model_button.clicked.connect(self.generate_model)
@@ -113,7 +192,8 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.table.horizontalHeader().setStretchLastSection(True)
 
     def determine_input_type(self, input_str):
-        if input_str.isdigit() or input_str.isalpha():
+        cas_pattern = re.compile(r"^\d{2,7}-\d{2}-\d$")
+        if input_str.isdigit() or input_str.isalpha() or cas_pattern.match(input_str):
             return "CID"
         elif re.match(r'^[a-zA-Z0-9]{4}$', input_str):
             return "PDB"
@@ -167,6 +247,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.filename = file_path_for_filename.stem
 
     def fetch_pubchem_data(self):
+        cid = None
         systematic_name = self.systematic_name_entry.text()
         all_digits = all(char.isdigit() for char in systematic_name)
 
@@ -176,10 +257,10 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
             if response.status_code == 200:
                 data = response.json()
-                cid = data['IdentifierList']['CID'][0]
-                self.model_template = cid
-                print(self.model_template)
-
+                cid = data.get('IdentifierList', {}).get('CID', [])[0]
+                if cid is None:
+                    self.show_error("Error", "CID not found for the given name.")
+                    return
         else:
             cid = systematic_name
 
@@ -331,8 +412,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
     def choose_directory(self):
         self.directory_path = QFileDialog.getExistingDirectory(self, "Select Directory")
-        self.directory_label.setText(self.directory_path if self.directory_path else os.path.join(home_directory, 'Downloads'))
-
+        self.directory_label.setText(self.directory_path)
     def choose_file(self):
         self.file_path, _ = QFileDialog.getOpenFileName(self, "Open File", "", "All Files (*)")
         if self.file_path:
@@ -345,6 +425,13 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
 
     def update_quality(self, value):
         self.quality_label.setText(f"Quality: {value}")
+
+    def update_generate_hydrogens(self, state):
+        if state == Qt.Checked:
+            self.hydrogens = True
+        else:
+            self.hydrogens = False
+        print("Hydrogens: "+str(self.hydrogens))
 
     def generate_model(self):
         # Placeholder for generate model logic
@@ -375,7 +462,11 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         print("Model: "+str(model)+", Resolution: "+str(resolution))
 
         #make_molecule_stl_VanDerWaals(pdb_absolute_path, resolution, csv_absolute_path, radius_factor)
-        ZIPmolecule(model, pdb_absolute_path, resolution, csv_absolute_path, radius_factor, filename)
+        ZIPmolecule(model, pdb_absolute_path, resolution, csv_absolute_path, radius_factor, filename, self.hydrogens)
+
+    def open_settings(self):
+        self.settings_window = SettingsWindow()
+        self.settings_window.exec_()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
