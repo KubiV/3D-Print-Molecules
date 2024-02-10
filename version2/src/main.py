@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import tempfile
 import json
-from MoleculeModelGenerating import ZIPmolecule
+from MoleculeModelGenerating import ZIPmolecule, verify_value_json
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QMessageBox, QCheckBox, QDialog, QScrollBar
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
@@ -29,7 +29,7 @@ class SettingsWindow(QDialog):
 
         # Setting for large_c_chain_protection
         setting_layout = QHBoxLayout()
-        self.label_large_c_chain = QLabel("Large C chain:")
+        self.label_large_c_chain = QLabel("Large C chain (100):")
         self.text_field_large_c_chain = QLineEdit(str(self.settings.get('large_c_chain_protection', '')))
         setting_layout.addWidget(self.label_large_c_chain)
         setting_layout.addStretch()
@@ -38,11 +38,20 @@ class SettingsWindow(QDialog):
 
         # Setting for resolution_limit
         setting_layout = QHBoxLayout()
-        self.label_resolution_limit = QLabel("Resolution limit when large C:")
+        self.label_resolution_limit = QLabel("Resolution limit when large C (8):")
         self.text_field_resolution_limit = QLineEdit(str(self.settings.get('resolution_limit', '')))
         setting_layout.addWidget(self.label_resolution_limit)
         setting_layout.addStretch()
         setting_layout.addWidget(self.text_field_resolution_limit)
+        layout.addLayout(setting_layout)
+
+        # Setting for radius_factor
+        setting_layout = QHBoxLayout()
+        self.label_radius_factor = QLabel("Radius multiplication factor (70):")
+        self.text_field_radius_factor = QLineEdit(str(self.settings.get('radius_factor', '')))
+        setting_layout.addWidget(self.label_radius_factor)
+        setting_layout.addStretch()
+        setting_layout.addWidget(self.text_field_radius_factor)
         layout.addLayout(setting_layout)
 
         # Change button
@@ -66,6 +75,7 @@ class SettingsWindow(QDialog):
         try:
             self.settings['large_c_chain_protection'] = int(self.text_field_large_c_chain.text())
             self.settings['resolution_limit'] = int(self.text_field_resolution_limit.text())
+            self.settings['radius_factor'] = int(self.text_field_radius_factor.text())
         except ValueError:
             # Handle invalid input; show an error message if necessary
             return
@@ -454,7 +464,9 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         pdb_absolute_path = os.path.join(os.path.dirname(file_path), pdb_filename)
 
         # Atom model settings
-        radius_factor = 0.7
+        #radius_factor = 0.7
+        radius_factor = verify_value_json("radius_factor", 70)/100
+        print("Radius factor: "+str(radius_factor))
         model = self.choice_menu.currentText()
         resolution = self.quality_slider.value()
         filename = self.filename

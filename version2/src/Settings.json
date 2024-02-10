@@ -1,4 +1,5 @@
 {
-    "large_c_chain_protection": 50,
-    "resolution_limit": 5
+    "large_c_chain_protection": 100,
+    "resolution_limit": 8,
+    "radius_factor": 70
 }

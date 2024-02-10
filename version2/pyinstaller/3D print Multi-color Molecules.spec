@@ -21,7 +21,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [('v', None, 'OPTION')],
-    name='3D print Multi-color Molecules',
+    name='3D Print Multi-Color Molecules',
     debug=True,
     bootloader_ignore_signals=False,
     strip=False,
@@ -38,7 +38,7 @@ exe = EXE(
 )
 app = BUNDLE(
     exe,
-    name='3D print Multi-color Molecules.app',
+    name='3D Print Multi-Color Molecules.app',
     icon='../../graphical/default_icon.icns',
     bundle_identifier=None,
 )
