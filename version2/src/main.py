@@ -8,9 +8,11 @@ from pathlib import Path
 import tempfile
 import json
 from MoleculeModelGenerating import ZIPmolecule, verify_value_json
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QMessageBox, QCheckBox, QDialog, QScrollBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QComboBox, QFileDialog, QTableWidget, QTableWidgetItem, QSlider, QMessageBox, QCheckBox, QDialog, QScrollBar
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
+
+VERSION = "v2.1.1"
 
 current_directory = os.path.dirname(__file__)
 
@@ -91,10 +93,23 @@ class SettingsWindow(QDialog):
         else:
             super().keyPressEvent(event)
 
-class MultiColouredMoleculesSTLGenerator(QWidget):
-    def __init__(self):
-        super().__init__()
+class MultiColouredMoleculesSTLGenerator(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super(MultiColouredMoleculesSTLGenerator, self).__init__(*args, **kwargs)
+        self.setWindowTitle("3D Print Multi-Color Molecules - " + VERSION)
+        self.directory_path = os.path.expanduser("~")  # Set a default directory
+        self.init_ui()
 
+    def init_ui(self):
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+
+        main_layout = QHBoxLayout(self)
+        left_layout = QVBoxLayout()
+        center_layout = QVBoxLayout()
+        right_layout = QVBoxLayout()
+
+        # Widgets
         self.systematic_name_entry = QLineEdit()
         self.file_button = QPushButton("Choose File")
         self.directory_path = Path.home() / "Desktop"
@@ -115,14 +130,6 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.generate_model_button = QPushButton("Generate Model")
         self.default_image_path = os.path.abspath(os.path.join(current_directory, "../../graphical/icon_v1.jpg"))  # Replace with the actual path to your default image
         
-        self.init_ui()
-
-    def init_ui(self):
-        main_layout = QHBoxLayout(self)
-        left_layout = QVBoxLayout()
-        center_layout = QVBoxLayout()
-        right_layout = QVBoxLayout()
-
         # Horizontal layout for input, file button and fetch button
         input_layout = QHBoxLayout()
         input_layout.addWidget(self.systematic_name_entry)
@@ -148,7 +155,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.directory_button.clicked.connect(self.choose_directory)
 
         # Combo box for choices
-        self.choice_menu.addItems(["VDW", "BS - does not work"])
+        self.choice_menu.addItems(["VDW", "BS - to be implemented"])
         center_layout.addWidget(self.choice_menu)
 
         # Table for labels
@@ -190,7 +197,10 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         main_layout.addLayout(center_layout)
         main_layout.addLayout(right_layout)
 
-        self.setWindowTitle("3D Print Multi-Color Molecules")
+        central_widget.setLayout(main_layout)
+
+        self.statusBar().showMessage("")
+
         self.show()
 
     def setup_table(self):
@@ -481,6 +491,7 @@ class MultiColouredMoleculesSTLGenerator(QWidget):
         self.settings_window.exec_()
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    chem_info_app = MultiColouredMoleculesSTLGenerator()
-    sys.exit(app.exec_())
+    app = QApplication([])
+    window = MultiColouredMoleculesSTLGenerator()
+    window.show()
+    app.exec_()
