@@ -1,9 +1,10 @@
-from Bio import PDB
+#from Bio import PDB
+from Bio.PDB import PDBParser
 import numpy as np
 
 def extract_coordinates(pdb_filename):
     # Create a PDB parser
-    parser = PDB.PDBParser(QUIET=True)
+    parser = PDBParser(QUIET=True)
 
     # Load the structure from the PDB file
     structure = parser.get_structure('molecule', pdb_filename)
@@ -34,7 +35,7 @@ def extract_coordinates(pdb_filename):
     return atom_coordinates
 
 def extract_coordinates2(pdb_filename):
-    parser = PDB.PDBParser(QUIET=True)
+    parser = PDBParser(QUIET=True)
     structure = parser.get_structure('molecule', pdb_filename)
     atoms = structure.get_atoms()
     atom_coordinates = {}
