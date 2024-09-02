@@ -40,7 +40,7 @@
 
 Use the pyinstaller command insiode the "pyinstaller" folder (cd `version2/pyinstaller`)
 
-macOS: `pyinstaller --onefile --add-data "Settings.json:." --windowed --name "3D print Multi-color Molecules" --icon=../../graphical/default_icon.icns --debug=all ../src/main.py`
+macOS: `pyinstaller --onefile --windowed --add-data "Settings.json:." --name "3D print Multi-color Molecules" --icon=../../graphical/default_icon.icns --debug=all --noconsole --exclude=PyQt6 --clean --noupx --strip --optimize=2 ../src/main.py` 
 
 Windows: `pyinstaller --onefile --add-data "Settings.json;." --windowed --name "3D print Multi-color Molecules" --icon=..\..\graphical\default_icon.ico --debug=all ..\src\main.py`
 

@@ -207,23 +207,17 @@ class WorkerThread(QThread):
             image_data = BytesIO(response.content)
             pixmap = QPixmap()
             pixmap.loadFromData(image_data.getvalue())
-
-            # Display the image
-            #self.image_label.setPixmap(pixmap)
-            self.set_image(pixmap)
+            pixmap = pixmap.scaled(self.main_window.image_label.width(), self.main_window.image_label.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.main_window.image_label.setPixmap(pixmap)
         else:
             self.show_error("Error", "Can not load the image") 
-
-    def set_image(self, image_path):
-        pixmap = QPixmap(image_path)
-        pixmap = pixmap.scaled(self.main_window.image_label.width(), self.main_window.image_label.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.main_window.image_label.setPixmap(pixmap)
 
     def set_table_info(self, first_item, second_item, third_item):
         # Update the labels with the fetched data
         self.main_window.table.setItem(0, 1, QTableWidgetItem(first_item))
         self.main_window.table.setItem(1, 1, QTableWidgetItem(second_item))
         self.main_window.table.setItem(2, 1, QTableWidgetItem(third_item))
+        self.main_window.table.viewport().update()
 
     def show_error(self, title, message):
         error_box = QMessageBox()
@@ -311,7 +305,7 @@ class SettingsWindow(QDialog):
         # Write updated settings back to the JSON file
         with open(self.settings_file_path, 'w') as file:
             json.dump(self.settings, file, indent=4)
-
+            print("Variables changed")
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_W and event.modifiers() & Qt.ControlModifier:
